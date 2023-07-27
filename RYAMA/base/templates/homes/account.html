@@ -1,0 +1,101 @@
+{% extends "homes/base_home.html" %}
+{% block loader %}
+    {% load static %}
+    <link href="{% static 'css/homes/account.css' %}" rel="stylesheet" />
+{% endblock loader %}
+{% block main %}
+    <script>const usernames = JSON.parse('{{ usernames|safe }}');</script>
+    <h2 class="mb-0">ログイン、新規アカウント作成</h2>
+    <div class="account mb-5" id="account">
+        <div class="form-container sign-up-container">
+            <h1 class="text-danger text-center mt-5 mb-0">Create Account</h1>
+            <form method="post" name="signUp" class="row  mt-0">
+                {% csrf_token %}
+                <div class="col-md-12">
+                    <label for="name" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text">@</span>
+                        <input type="text"
+                               class="form-control is-invalid"
+                               id="up-name"
+                               name="name"
+                               aria-describedby="name"
+                               value="{{ up_username }}"
+                               required>
+                        <div class="valid-feedback"id="up-name-valid">このユーザー名は使用できます</div>
+                        <div class="invalid-feedback" id="up-name-invalid">ユーザー名を入力してください</div>
+                    </div>
+                    <div id="up-name-feedback"></div>
+                </div>
+                <div class="col-md-12">
+                    <label for="password1" class="form-label">Password</label>
+                    <input type="password"
+                           name="password1"
+                           class="form-control"
+                           id="password1"
+                           required>
+                </div>
+                <div class="col-md-12">
+                    <label for="password2" class="form-label">Password Confirm</label>
+                    <input type="password"
+                           name="password2"
+                           class="form-control"
+                           id="password2"
+                           required>
+                </div>
+                <div class="mt-5 col-4">
+                    <button class="btn btn-primary" type="submit" name="sign" value="up">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <h1 class="text-danger text-center mt-5 mb-0">Login Account</h1>
+            <form method="post" name="signIn" class="row mt-0 was-validated" novalidate>
+                {% csrf_token %}
+                <div class="col-md-12">
+                    <label for="name" class="form-label">Username</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text" id="inputGroupPrepend2">@</span>
+                        <input type="text"
+                               class="form-control"
+                               id="in-name"
+                               name="name"
+                               aria-describedby="inputGroupPrepend2"
+                               value="{{ in_username }}"
+                               required>
+                        <div class="valid-feedback">Valid.</div>
+                        <div class="invalid-feedback">ユーザー名を入力してください</div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           id="password"
+                           required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">パスワードを入力してください</div>
+                </div>
+                <div class="mt-5 col-4">
+                    <button class="btn btn-primary" type="submit" name="sign" value="in">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>アカウントにログインしてください</p>
+                    <button type="button" id="signIn" class="btn btn-outline-light ghost">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>アカウントを作成して、旅に出ましょう</p>
+                    <button type="button" id="signUp" class="btn btn-outline-light ghost">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/homes/account.js' %}"></script>
+{% endblock main %}
