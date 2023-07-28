@@ -23,15 +23,7 @@ body {
   font-size: 12px;
 }
 
-.account a {
-  color: #333;
-  font-size: 14px;
-  text-decoration: none;
-  margin: 15px 0;
-}
-
 form {
-  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;

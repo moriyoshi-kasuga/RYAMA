@@ -4,6 +4,19 @@
   box-sizing: border-box;
 }
 
+:root {
+  --color-link: #3c97bf;
+
+  --c-pw: rgb(181, 199, 204); /* pasterl-blue */
+  --c-cg: rgb(139, 161, 173); /* carget-grey */
+  --c-st: rgb(88, 123, 137); /* steel-teal */
+  --c-pb: rgb(36, 77, 102); /* police-blue */
+
+  --c-da: rgb(64, 125, 108); /* deep-aquamarin */
+  --c-dgs: rgb(125, 178, 144); /* dark-sea-green */
+  --c-bc: rgba(52, 53, 65, 1); /* background-color */
+}
+
 /*NOTE: Base Style*/
 body {
   font-family: "Noto Sans JP", "Helvetica Neue", "Helvetica", "Hiragino Sans",
@@ -12,43 +25,32 @@ body {
   line-height: 1.5;
   display: flex;
   padding-top: 100px;
-  background-color: #5f976f;
 }
 
-/* NOTE: Colors*/
-
-.blue {
-  color: blue;
+.c-pb {
+  color: var(--c-pb);
 }
 
-.red {
-  color: red;
+.c-cg {
+  color: var(--c-cg);
 }
 
-.yellow {
-  color: yello;
+.c-st {
+  color: var(--c-st);
 }
 
-.green {
-  color: green;
+.c-pb {
+  color: var(--c-pb);
 }
 
-.white {
-  color: white;
+.c-da {
+  color: var(--c-da);
 }
 
-.black {
-  color: black;
+.c-dsg {
+  color: var(--c-dsg);
 }
 
-.bold {
-  font-style: bold;
-}
-
-.italic {
-  font-style: italic;
-}
-
-.underline {
-  text-decoration: underline;
+.c-link {
+  color: var(--color-link);
 }
