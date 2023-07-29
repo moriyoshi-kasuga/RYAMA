@@ -33,6 +33,14 @@ def page_feature(request, *args, **kwargs):
     return render(request, "homes/feature.html")
 
 
+def page_login(request, *args, **kwargs):
+    return render(request, "homes/login.html")
+
+
+def page_signup(request, *args, **kwargs):
+    return render(request, "homes/signup.html")
+
+
 def page_account(request, *args, **kwargs):
     context = {
         "usernames": json.dumps(list(User.objects.values_list("username", flat=True)))

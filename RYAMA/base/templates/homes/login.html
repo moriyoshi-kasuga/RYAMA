@@ -1,0 +1,37 @@
+{% extends "homes/base_home.html" %}
+{% block loader %}
+    {% load static %}
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
+          rel='stylesheet'>
+    <link href="{% static 'css/homes/login.css' %}" rel="stylesheet" />
+{% endblock loader %}
+{% block main %}
+    <div class="wrapper">
+        <form action="">
+            <h1>Login</h1>
+            <div class="input-box">
+                <input type="text" placeholder="Username" required>
+                <i class="bx bxs-user"></i>
+            </div>
+            <div class="input-box">
+                <input type="passoword" placeholder="Password" required>
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+            <div class="remember-forget">
+                <label>
+                    <input type="checkbox">
+                    Remember me
+                </label>
+                <a href="#">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <div class="register-link">
+                <p>
+                    Don't have an axxount?
+                    <a href="#">Register</a>
+                </p>
+            </div>
+        </form>
+    </div>
+    <script src="{% static 'js/homes/login.js' %}"></script>
+{% endblock main %}

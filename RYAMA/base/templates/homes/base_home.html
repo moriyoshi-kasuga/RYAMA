@@ -10,7 +10,7 @@
     <header>
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand text-black" href="/">RYAMA</a>
+                <a class="navbar-brand c-pw" href="/">RYAMA</a>
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
@@ -23,10 +23,12 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="{% url 'why' %}">WHY</a>
+                            <a class="nav-link text-white"
+                               aria-current="page"
+                               href="{% url 'why' %}">WHY</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'feature' %}">Feature</a>
+                            <a class="nav-link text-white" href="{% url 'feature' %}">Feature</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-white"
@@ -67,6 +69,11 @@
                                        href="https://csstools.github.io/sanitize.css/">SanitizeCSS</a>
                                 </li>
                                 <li>
+                                    <a target="_blank" class="dropdown-item" href="https://boxicons.com/">BoxIcons</a>
+                                </li>
+                                <!-- FIX: REMOVE BootStrap -->
+                                <!-- なぜかというと html css js を真面目に今最初だからしっかりと基礎を学ぼう -->
+                                <li>
                                     <a target="_blank" class="dropdown-item" href="https://getbootstrap.jp/">BootStrap</a>
                                 </li>
                             </ul>
@@ -77,7 +84,7 @@
                                    href="{% url 'logout' %}">Logout</a>
                             {% else %}
                                 <a class="nav-link text-danger fw-bold text-decoration-underline"
-                                   href="{% url 'account' %}">Account</a>
+                                   href="{% url 'login' %}">Login</a>
                             {% endif %}
                         </li>
                     </ul>
