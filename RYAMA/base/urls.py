@@ -8,9 +8,8 @@ urlpatterns = [
     # NOTE: ↑ of TEST page
     path("", views.page_home, name="home"),
     path("markdowns/", views.page_markdowns, name="markdowns"),
-    path("account/", views.page_account, name="account"),
-    path("login", views.page_login, name="login"),
-    path("signup", views.page_signup, name="signup"),
+    path("login/", views.page_login, name="login"),
+    path("signup/", views.page_signup, name="signup"),
     path("why/", views.page_why, name="why"),
     path("feature/", views.page_feature, name="feature"),
     path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
