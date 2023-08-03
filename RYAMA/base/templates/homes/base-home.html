@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/homes/base-home.css' %}">
+    {% block heads %}
+    {% endblock heads %}
+{% endblock head %}
+{% block content %}
+    <header class="header-home">
+        <nav class="hnav">
+            <a href="/" class="logo">
+                <img src="{% static 'images/icon.png' %}"
+                     alt="icon"
+                     height="50"
+                     width="50">
+                <img src="{% static 'images/logo.png' %}"
+                     alt="logo"
+                     height="50"
+                     width="165">
+            </a>
+            <ul class="hnav-list">
+                <li>
+                    <a href="{% url 'publish' %}">公開機能</a>
+                </li>
+                <li>
+                    <a href="{% url 'about' %}">サイト概要</a>
+                </li>
+                <li>
+                    <a href="{% url 'features' %}">使い方</a>
+                </li>
+            </ul>
+            <a class="box" href="{% url 'login' %}">アカウント</a>
+        </nav>
+    </header>
+    <main>
+        {% block main %}
+        {% endblock main %}
+    </main>
+    <footer>
+    </footer>
+{% endblock content %}
