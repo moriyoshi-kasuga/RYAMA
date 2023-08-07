@@ -1,0 +1,19 @@
+
+    {% load mptt_tags %}
+    <ul>
+        {% recursetree markdowns %}
+        <li>
+            {{ node.name }}
+            {% if node.files.all %}
+                <ul>
+                    {% for file in node.files.all %}<li style="color:red;">{{ file }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+            {% if not node.is_leaf_node %}
+                <ul class="children">
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>
