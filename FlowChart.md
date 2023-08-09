@@ -34,7 +34,9 @@ style action_signup color:yellow
 style page_markdowns color:yellow
 ```
 
-## Markdowns Page
+# Markdowns Page
+
+## SideBard Action
 
 ### Cliked Empty
 
@@ -74,4 +76,18 @@ copy((Copy This File))
 bookmark((This File to Bookmark))
 rename((This File Name change))
 delte((This File delte))
+```
+
+## Design
+
+```mermaid
+flowchart TD;
+close(Closed Menus)
+close --> clicked_mark{Cliked Mark}
+clicked_mark --> |Explorer| open_explorer(Open Explorer Tab)
+clicked_mark --> |Bookmark| open_bookmark(Open Bookmark Tab)
+clicked_mark --> |alerdy opented| opend_tab{Alerady opened tab}
+opend_tab --> |Open Explorer and Click Bookmark| open_bookmark
+opend_tab --> |Open Bookmark and Click Explorer| open_explorer
+opend_tab --> |Click and Open are the same| close
 ```
