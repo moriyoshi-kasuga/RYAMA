@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/markdowns/main.css' %}" />
+{% endblock head %}
+{% block content %}
+    <header id="header">
+        <div class="header-inner">
+            <a href="/" class="icon">
+                <img src="{% static 'images/icon.png' %}"
+                     alt="icon"
+                     height="20"
+                     width="20">
+            </a>
+            <nav class="area-nav-header">
+                <ul class="list-nav-header">
+                    <li>
+                        <i class="ph ph-gear"></i>
+                    </li>
+                    <li>
+                        <i class="ph ph-list"></i>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <!-- onContextmenU="return false;" -->
+        <div class="LeftPaneContainer" onContextmenU="return false;">
+            <div class="LeftPaneContainer-nav">
+                <div class="LeftPaneContainer-navItem" id="navItem-explorer">
+                    <i class="ph ph-file"></i>
+                </div>
+                <div class="LeftPaneContainer-navItem" id="navItem-bookmark">
+                    <i class="ph ph-book-bookmark"></i>
+                </div>
+            </div>
+            <div class="LeftPaneContainer-panes">
+                <div class="Pane" id="explorer">
+                    <div class="Pane-header">
+                        <span class="Pane-headerText">My Files</span>
+                        <div class="Pane-headerToolbar">
+                            <i class="ph ph-plus"></i>
+                            <i class="ph ph-file-search"></i>
+                        </div>
+                    </div>
+                    <div class="PaneBody" id="ExplorerBody">
+                        {% load mptt_tags %}
+                        {% recursetree markdowns %}
+                        {% if node.name == request.user.username %}
+                            {% if not node.is_leaf_node %}{{ children }}{% endif %}
+                            {% if node.documents.all %}
+                                {% for document in node.documents.all %}
+                                    <div class="DocumentItem" id="Document-{{ document.id }}">
+                                        <div class="DocumentItem-header pane-item-header">
+                                            <div class="DocumentItem-toggler pane-item-toggler"></div>
+                                            <i class="DocumentItem-icon pane-item-icon ph ph-file-text"></i>
+                                            <div class="DocumentItem-title pane-item-title" spellcheck="false">{{ document }}</div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            {% if node.is_leaf_node or node.documents.all %}
+                                <div class="FolderItem parent-item" id="Folder-{{ node.id }}">
+                                    <div class="FolderItem-header pane-item-header">
+                                        <div class="FolderItem-toggler icon pane-item-toggler"></div>
+                                        <i class="FolderItem-icon pane-item-icon ph ph-folder-simple"></i>
+                                        <div class="FolderItem-title pane-item-title" spellcheck="false">{{ node.name }}</div>
+                                    </div>
+                                    <div class="pane-item-children">
+                                        {% if not node.is_leaf_node %}{{ children }}{% endif %}
+                                        {% if node.documents.all %}
+                                            {% for document in node.documents.all %}
+                                                <div class="DocumentItem" id="Document-{{ document.id }}">
+                                                    <div class="DocumentItem-header pane-item-header">
+                                                        <div class="DocumentItem-toggler pane-item-toggler"></div>
+                                                        <i class="DocumentItem-icon pane-item-icon ph ph-file-text"></i>
+                                                        <div class="DocumentItem-title pane-item-title" spellcheck="false">{{ document }}</div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="FolderItem empty-item" id="Folder-{{ node.id }}">
+                                    <div class="FolderItem-header pane-item-header">
+                                        <div class="FolderItem-toggler icon pane-item-toggler"></div>
+                                        <i class="FolderItem-icon pane-item-icon ph ph-folder-simple"></i>
+                                        <div class="FolderItem-title pane-item-title" spellcheck="false">{{ node.name }}</div>
+                                    </div>
+                                    <div class="pane-item-children"></div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endrecursetree %}
+                </div>
+            </div>
+            <div class="Pane bookmark" style="display:none"></div>
+        </div>
+    </div>
+</main>
+<div class="ModalMenus">
+    <div class="ModalMenu DocumentRenameModalMenu">
+        <div class="ModalMenu-content">
+            <div class="ModalMenu-body">
+                <form method="post" autocomplete="off">
+                    <label for="DocumentRenameModalMenu-name">Rename for:</label>
+                    <input type="text"
+                           name="name"
+                           id="DocumentRenameModalMenu-name"
+                           value=""
+                           spellcheck="off"
+                           required>
+                    <input type="hidden" name="id" id="DocumentRenameModalMenu-id" required>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ContextMenus">
+    <div class="ContextMenu DocumentContextMenu">
+        <ul class="ContextMenuGroup">
+            <li class="ContextMenuItem ContextMenuItem--documentPublish">
+                <i class="ContextMenuItem-icon ph ph-users"></i>
+                <span class="ContextMenuItem-name">Manage Publish</span>
+            </li>
+        </ul>
+        <ul class="ContextMenuGroup">
+            <li class="ContextMenuItem ContextMenuItem--addBookmark">
+                <i class="ContextMenuItem-icon ph ph-star"></i>
+                <span class="ContextMenuItem-name">Add to bookmark</span>
+            </li>
+            <li class="ContextMenuItem ContextMenuItem--documentCopy">
+                <i class="ContextMenuItem-icon ph ph-files"></i>
+                <span class="ContextMenuItem-name">Make a copy</span>
+            </li>
+            <li class="ContextMenuItem ContextMenuItem--documentRename">
+                <i class="ContextMenuItem-icon ph ph-pencil"></i>
+                <span class="ContextMenuItem-name">Rename</span>
+            </li>
+            <li class="ContextMenuItem ContextMenuItem--documentDelete">
+                <i class="ContextMenuItem-icon ph ph-eraser"></i>
+                <span class="ContextMenuItem-name">Delete</span>
+            </li>
+        </ul>
+    </div>
+    <div class="ContextMenu FolderContextMenu">
+        <ul class="ContextMenuGroup">
+            <li class="ContextMenuItem ContextMenuItem--newDocument">
+                <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
+                <span class="ContextMenuItem-name">New document</span>
+            </li>
+            <li class="ContextMenuItem ContextMenuItem--newFolder">
+                <i class="ContextMenuItem-icon ph ph-file-plus"></i>
+                <span class="ContextMenuItem-name">New folder</span>
+            </li>
+        </ul>
+        <ul class="ContextMenuGroup">
+            <li class="ContextMenuItem ContextMenuItem--folderPublish">
+                <i class="ContextMenuItem-icon ph ph-users"></i>
+                <span class="ContextMenuItem-name">Manege Publish</span>
+            </li>
+        </ul>
+        <ul class="ContextMenuGroup">
+            <li class="ContextMenuItem ContextMenuItem--folderRename">
+                <i class="ContextMenuItem-icon ph ph-pencil"></i>
+                <span class="ContextMenuItem-name">Rename</span>
+            </li>
+            <li class="ContextMenuItem ContextMenuItem--folderDelete">
+                <i class="ContextMenuItem-icon ph ph-eraser"></i>
+                <span class="ContextMenuItem-name">Delete</span>
+            </li>
+        </ul>
+    </div>
+    <div class="ContextMenu ExplorerBodyContextMenu">
+        <ul class="ContextMenuGroup">
+            <li class="ContextMenuItem ContextMenuItem--explorerNewDocument">
+                <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
+                <span class="ContextMenuItem-name">New document</span>
+            </li>
+            <li class="ContextMenuItem ContextMenuItem--explorerNewFolder">
+                <i class="ContextMenuItem-icon ph ph-file-plus"></i>
+                <span class="ContextMenuItem-name">New folder</span>
+            </li>
+        </ul>
+    </div>
+</div>
+<script src="{% static 'js/markdowns/markdowns.js'%}"></script>
+{% endblock content %}
