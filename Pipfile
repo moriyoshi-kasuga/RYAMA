@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 django-mptt = "*"
 django-js-asset = "*"
+django-browser-reload = "*"
 
 [dev-packages]
 
