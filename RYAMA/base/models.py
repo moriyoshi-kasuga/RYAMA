@@ -5,7 +5,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 
 class Folder(MPTTModel):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="folders")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="folders")
 
     name = models.CharField(
         verbose_name=_("Folder Name"),
@@ -22,6 +22,13 @@ class Folder(MPTTModel):
         verbose_name=_("publish"), help_text=_("Check Published"), default=False
     )
 
+    is_explorer = models.BooleanField(
+        verbose_name=_("explorer"),
+        help_text=_("Is Explorer Folder"),
+        default=False,
+        editable=False,
+    )
+
     class MPTTMeta:
         order_insertion_by = ["name"]
 
@@ -33,10 +40,12 @@ class Folder(MPTTModel):
         return f"{self.name}"
 
 
-class File(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="files")
+class Document(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="documents")
 
-    parent = models.ForeignKey(Folder, on_delete=models.CASCADE, related_name="files")
+    parent = models.ForeignKey(
+        Folder, on_delete=models.CASCADE, related_name="documents"
+    )
     name = models.CharField(
         verbose_name=_("name"), help_text=_("Required"), max_length=50
     )
@@ -55,8 +64,8 @@ class File(models.Model):
 
     class Meta:
         ordering = ["created_at"]
-        verbose_name = _("File")
-        verbose_name_plural = _("Files")
+        verbose_name = _("Document")
+        verbose_name_plural = _("Documents")
 
     def __str__(self):
         return f"{self.name}"

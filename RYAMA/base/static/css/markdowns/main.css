@@ -3,7 +3,7 @@ body {
   color: #18a6b0;
 }
 
-/*BLOCK : HEADEr*/
+/*BLOCK: HEADEr*/
 #header {
   width: 100%;
   background-color: #181818;
@@ -48,7 +48,7 @@ body {
   margin-left: 5px;
 }
 
-/*BLOCK : LeftPaneContainer*/
+/*BLOCK: LeftPaneContainer*/
 
 .LeftPaneContainer {
   user-select: none;
@@ -71,12 +71,16 @@ body {
 
 .LeftPaneContainer-panes {
   position: absolute;
-  right: 0;
+  left: 20px;
   width: calc(100% - 20px);
   height: 100%;
   display: block;
   font-size: 18px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+  resize: horizontal;
+  overflow: hidden;
+  max-width: 600px;
+  min-width: 150px;
+  box-shadow: 0 1px 0 1px #222222;
 }
 
 .LeftPaneContainer-panes .Pane-header {
@@ -89,18 +93,31 @@ body {
   align-items: center;
 }
 
+.LeftPaneContainer-panes .Pane-headerText {
+  color: #1dc9d6;
+}
+
 .LeftPaneContainer-panes .Pane-headerToolbar {
   text-align: right;
   position: absolute;
-  align-items: center;
   bottom: 0;
   right: 5px;
   font-size: 20px;
   top: 0;
 }
 
+.LeftPaneContainer-panes .Pane-headerToolbar > * {
+  position: relative;
+  top: -1.5px;
+}
+
 .Pane {
   height: 100%;
+}
+
+.PaneBody {
+  overflow: auto;
+  height: calc(100% - 26px);
 }
 
 .pane-item-header {
@@ -116,6 +133,10 @@ body {
 .pane-item-header:hover {
   background-color: #0a474c;
   transition: all 0.2s;
+}
+
+.DocumentItem.file-open > .pane-item-header {
+  background-color: #343434;
 }
 
 .pane-item-toggler {
@@ -145,6 +166,19 @@ body {
   word-wrap: break-word;
 }
 
+.DocumentItem.file-open > .DocumentItem-header {
+  font-weight: bold;
+}
+
+.pane-item-title.is-beinEdited {
+  background: #343434;
+  user-select: text;
+  border: 1px solid #666666;
+  outline: 0;
+  padding: 0 10px 0 2px;
+  cursor: text;
+}
+
 .icon {
   font-style: normal;
   font-family: "Phosphor" !important;
@@ -163,7 +197,60 @@ body {
   content: "\e9fe";
 }
 
+.ModalMenu {
+  color: #1dc9d6;
+  position: fixed;
+  z-index: 401;
+  user-select: none;
+  display: none;
+  height: 100%;
+  width: 100%;
+}
+
+.ModalMenu-content {
+  background: #181818;
+  border: 1px solid #3a777b;
+  width: fit-content;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.ModalMenu-header {
+  padding: 15px 15px;
+  display: flex;
+  font-size: 2rem;
+  font-weight: 500;
+  justify-content: space-between;
+}
+
+.ModalMenu-close {
+  right: 0;
+  top: 0;
+  font-size: 2rem;
+}
+
+.ModalMenu-close:hover {
+  cursor: pointer;
+}
+
+.ModalMenu-header + .ModalMenu-body {
+  border-top: 1px solid #3a777b;
+}
+
+.ModalMenu-body {
+  padding: 10px 20px;
+}
+
+.ModalMenu-body form {
+  display: flex;
+  align-items: center;
+}
+
+.ModalMenu-body form * {
+  margin: 2px;
+}
+
 .ContextMenu {
+  color: #1dc9d6;
   background: #181818;
   border: 1px solid #3a777b;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
@@ -173,36 +260,65 @@ body {
   display: none;
 }
 
-.MenuGroup {
+.ContextMenuGroup {
   margin: 0;
   padding: 2px 0;
   font-size: 15px;
   list-style-type: none;
 }
 
-.MenuItem {
+.ContextMenuItem {
   position: relative;
   cursor: pointer;
   padding: 4px 30px 4px 10px;
 }
 
-.MenuItem-icon {
+.ContextMenuItem-icon {
   display: inline-block;
   margin: 2px 10px 2px 0;
   position: relative;
   top: 1px;
+  font-size: 20px;
   width: 20px;
   text-align: center;
 }
 
-.MenuItem-name {
+.ContextMenuItem-name {
   text-decoration: none;
 }
 
-.MenuItem.MenuItem--newDocument .MenuItem-icon:before {
-  content: "\eaf6";
+.ContextMenuGroup + .ContextMenuGroup {
+  border-top: 1px solid #415556;
 }
 
-.MenuItem.MenuItem--newFolder .MenuItem-icon:before {
-  content: "\eb2a";
+input {
+  background-color: #181818;
+  border: 1px solid #415556;
+  color: #1dc9d6;
+}
+
+::-webkit-scrollbar {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  -webkit-border-radius: 100px;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 100px;
+}
+
+::selection {
+  background: rgba(10, 71, 76, 0.99);
 }
