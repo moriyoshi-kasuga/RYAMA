@@ -7,7 +7,7 @@ urlpatterns = [
     # path("test/", views.page_test, name="test"),
     # NOTE: ↑ of TEST page
     path("", views.page_home, name="home"),
-    path("login/", views.page_login, name="login"),
+    path("login/", views.Login.as_view(), name="login"),
     path("signup/", views.page_signup, name="signup"),
     path("publish/", views.page_publish, name="publish"),
     path("about/", views.page_about, name="about"),

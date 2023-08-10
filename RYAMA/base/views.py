@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
@@ -31,8 +33,8 @@ def page_features(request, *args, **kwargs):
     return render(request, "homes/features.html")
 
 
-def page_login(request, *args, **kwargs):
-    return render(request, "homes/login.html")
+class Login(LoginView):
+    template_name = "homes/login.html"
 
 
 def page_signup(request, *args, **kwargs):
