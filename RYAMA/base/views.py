@@ -47,7 +47,7 @@ def page_signup(request, *args, **kwargs):
 def page_markdowns(request, *args, **kwargs):
     user = request.user
     if not user.is_authenticated:
-        return redirect("home")
+        return redirect("login")
     if len(Folder.objects.filter(user=user, is_explorer=True)) == 0:
         Folder.objects.create(user=user, name=user.username, is_explorer=True)
     # if request == "POST":
