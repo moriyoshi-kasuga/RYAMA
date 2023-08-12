@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 
-from .models import Document, Folder
+from .models import File, Folder
 
 
 def page_home(request, *args, **kwargs):

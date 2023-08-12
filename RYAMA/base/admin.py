@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 
-from .models import Document, Folder
+from .models import File, Folder
 
 # Register your models here.
 admin.site.register(
@@ -15,4 +15,4 @@ admin.site.register(
     list_display_links=("indented_title",),
 )
 
-admin.site.register(Document)
+admin.site.register(File)

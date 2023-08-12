@@ -40,18 +40,14 @@ class Folder(MPTTModel):
         return f"{self.name}"
 
 
-class Document(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="documents")
+class File(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="files")
 
-    parent = models.ForeignKey(
-        Folder, on_delete=models.CASCADE, related_name="documents"
-    )
+    parent = models.ForeignKey(Folder, on_delete=models.CASCADE, related_name="files")
     name = models.CharField(
         verbose_name=_("name"), help_text=_("Required"), max_length=50
     )
-    document = models.TextField(
-        verbose_name=_("content"), help_text=_("document"), blank=True
-    )
+    file = models.TextField(verbose_name=_("content"), help_text=_("file"), blank=True)
     is_published = models.BooleanField(
         verbose_name=_("publish"), help_text=_("Check Published"), default=False
     )
@@ -64,8 +60,8 @@ class Document(models.Model):
 
     class Meta:
         ordering = ["created_at"]
-        verbose_name = _("Document")
-        verbose_name_plural = _("Documents")
+        verbose_name = _("File")
+        verbose_name_plural = _("Files")
 
     def __str__(self):
         return f"{self.name}"
