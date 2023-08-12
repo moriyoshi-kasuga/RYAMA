@@ -10,14 +10,20 @@
                 <div class="Pane" id="explorer">
                     <div class="Pane-header">
                         <div class="Pane-headerToolbar">
-                            <i class="ph ph-plus"></i>
+                            <i class="ph ph-file-plus"></i>
+                            <i class="ph ph-folder-simple-plus"></i>
+                            <i class="ph ph-trash"></i>
+                            <i class="ph ph-pencil"></i>
                             <i class="ph ph-file-search"></i>
+                        </div>
+                        <div class="explorer-close">
+                            <i class="ph ph-x"></i>
                         </div>
                     </div>
                     <div class="PaneBody" id="ExplorerBody">
                         {% load mptt_tags %}
                         {% recursetree markdowns %}
-                        {% if node.name == request.user.username %}
+                        {% if node.is_explorer %}
                             {% if not node.is_leaf_node %}{{ children }}{% endif %}
                             {% if node.documents.all %}
                                 {% for document in node.documents.all %}
@@ -78,16 +84,14 @@
                         <li>
                             <i class="ph ph-gear"></i>
                         </li>
-                        <li>
-                            <a href="/" class="icon">
-                                <img src="{% static 'images/icon.png' %}"
-                                     alt="icon"
-                                     height="36px"
-                                     width="36px">
-                            </a>
-                        </li>
                     </ul>
                 </nav>
+                <a href="/" class="icon">
+                    <img src="{% static 'images/icon.png' %}"
+                         alt="icon"
+                         height="36px"
+                         width="36px">
+                </a>
             </div>
         </div>
     </div>
@@ -167,11 +171,11 @@
     </div>
     <div class="ContextMenu ExplorerBodyContextMenu">
         <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem ContextMenuItem--explorerNewDocument">
+            <li class="ContextMenuItem Explorer--NewDocument">
                 <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
                 <span class="ContextMenuItem-name">New document</span>
             </li>
-            <li class="ContextMenuItem ContextMenuItem--explorerNewFolder">
+            <li class="ContextMenuItem Explorer--NewFolder">
                 <i class="ContextMenuItem-icon ph ph-file-plus"></i>
                 <span class="ContextMenuItem-name">New folder</span>
             </li>

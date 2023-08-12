@@ -29,7 +29,7 @@ body {
 }
 
 #header .icon {
-  display: block;
+  margin-bottom: 1%;
 }
 
 .area-nav-header {
@@ -41,17 +41,13 @@ body {
 .list-nav-header {
   display: flex;
   align-items: center;
-}
-
-.list-nav-header ul {
   margin: 0;
   font-size: 1rem;
-  font-weight: 500;
+  color: #18a6b0;
+  margin-bottom: 0;
+  font-size: 36px;
 }
 
-.list-nav-header > li > i {
-  color: #18a6b0;
-}
 
 .list-nav-header > li:not(:first-child) {
   margin-left: 5px;
@@ -82,32 +78,34 @@ body {
 }
 
 .LeftPaneContainer-panes .Pane-header {
-  font-size: 15px;
-  height: 26px;
-  position: relative;
-  text-align: left;
-  padding-left: 10px;
+  height: 40px;
   background: #262626;
-  align-items: center;
-}
-
-.LeftPaneContainer-panes .Pane-headerText {
-  color: #1dc9d6;
+  position: relative;
+  font-size: 24px;
 }
 
 .LeftPaneContainer-panes .Pane-headerToolbar {
-  text-align: right;
   position: absolute;
-  bottom: 0;
-  right: 5px;
-  font-size: 20px;
-  top: 0;
+  width: calc(100% - 40px);
+  height: 100%;
 }
 
-.LeftPaneContainer-panes .Pane-headerToolbar > * {
-  position: relative;
-  top: -1.5px;
+.LeftPaneContainer-panes .Pane-headerToolbar > * + * {
+  margin-left: 5px;
 }
+
+.LeftPaneContainer-panes .explorer-close {
+  right: 0;
+  width: 40px;
+  height: 100%;
+  position: absolute;
+  text-align: center;
+}
+
+.LeftPaneContainer-panes i {
+  vertical-align: -2px;
+}
+
 
 .Pane {
   height: 100%;
