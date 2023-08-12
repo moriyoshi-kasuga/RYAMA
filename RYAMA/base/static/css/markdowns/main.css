@@ -3,6 +3,17 @@ body {
   color: #18a6b0;
 }
 
+#layout {
+  display: flex;
+  flex-direction: row;
+}
+
+.main {
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+}
+
 /*BLOCK: HEADEr*/
 #header {
   width: 100%;
@@ -12,8 +23,9 @@ body {
 #header .header-inner {
   display: flex;
   align-items: center;
-  height: 32px;
+  height: 40px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  font-size: 36px;
 }
 
 #header .icon {
@@ -23,6 +35,7 @@ body {
 .area-nav-header {
   margin-left: auto;
   margin-right: 10px;
+  font-size: 36px;
 }
 
 .list-nav-header {
@@ -34,10 +47,6 @@ body {
   margin: 0;
   font-size: 1rem;
   font-weight: 500;
-}
-
-.list-nav-header > li {
-  transform: scale(1.5);
 }
 
 .list-nav-header > li > i {
@@ -52,27 +61,16 @@ body {
 
 .LeftPaneContainer {
   user-select: none;
-  height: calc(100vh - 32px);
-  width: 340px;
-  position: absolute;
+  height: 100vh;
+  position: relative;
+  width: fit-content;
   font-size: 18px;
   background-color: #181818;
-}
-
-.LeftPaneContainer-nav {
-  position: absolute;
-  padding-top: 26px;
-  left: 0;
-  width: 20px;
-  height: 100%;
-  background: #262626;
-  box-shadow: inset 0 0 1px -1px #3a777b;
+  display: none;
 }
 
 .LeftPaneContainer-panes {
-  position: absolute;
-  left: 20px;
-  width: calc(100% - 20px);
+  width: 240px;
   height: 100%;
   display: block;
   font-size: 18px;

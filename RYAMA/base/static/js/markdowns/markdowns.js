@@ -1,3 +1,10 @@
+function applyClassElements (className, elementLambda) {
+  const $clazz = document.getElementsByClassName(className)
+  for (let i = 0; i < $clazz.length; i++) {
+    elementLambda($clazz[i])
+  }
+}
+
 // BLOCK: ContextMenus
 let enableContextMenu = null
 const $contextMenus = document.querySelector('.ContextMenus')
@@ -8,9 +15,7 @@ const resetContextMenu = () => {
   }
 }
 
-const $documentContextMenu = $contextMenus.querySelector(
-  '.DocumentContextMenu'
-)
+const $fileContextMenu = $contextMenus.querySelector('.FileContextMenu')
 
 const $folderContextMenu = $contextMenus.querySelector('.FolderContextMenu')
 
@@ -18,17 +23,15 @@ function showContextMenu (contextMenu, x, y) {
   resetContextMenu()
   enableContextMenu = contextMenu
   contextMenu.style.display = 'block'
-  contextMenu.style.left = x + 'px'
-  contextMenu.style.top = y + 'px'
+  contextMenu.style.left = `${x}px`
+  contextMenu.style.top = `${y}px`
 }
 
 document.addEventListener('click', () => {
   resetContextMenu()
 })
 
-const $Panes = document.getElementsByClassName('PaneBody')
-for (let i = 0; i < $Panes.length; i++) {
-  const $Pane = $Panes[i]
+applyClassElements('PaneBody', ($Pane) => {
   $Pane.addEventListener('contextmenu', (event) => {
     if (event.target === event.currentTarget) {
       console.log(`${event.target.id}ContextMenu`)
@@ -39,52 +42,64 @@ for (let i = 0; i < $Panes.length; i++) {
       )
     }
   })
-}
+})
 
 // BLOCK: ModalMenus
 const $modalMenus = document.querySelector('.ModalMenus')
 
-const $allModalMenu = $modalMenus.getElementsByClassName('ModalMenu')
-for (let i = 0; i < $allModalMenu.length; i++) {
-  const $modalMenu = $allModalMenu[i]
+applyClassElements('ModalMenu', ($modalMenu) => {
   $modalMenu.addEventListener('click', (event) => {
     if (event.target === event.currentTarget) {
       $modalMenu.style.display = 'none'
     }
   })
   const $ModalMenuClose = $modalMenu.querySelector('.ModalMenu-close')
-  if ($ModalMenuClose === null) {
-    continue
+  if ($ModalMenuClose !== null) {
+    $ModalMenuClose.addEventListener('click', () => {
+      $modalMenu.style.display = 'none'
+    })
   }
-  $ModalMenuClose.addEventListener('click', () => {
-    $modalMenu.style.display = 'none'
-  })
-}
+})
 
-const $DocumentRenameModalMenu = $modalMenus.querySelector(
-  '.DocumentRenameModalMenu'
-)
+const $FileRenameModalMenu = $modalMenus.querySelector('.FileRenameModalMenu')
 
-function showModalMenuOfDocumentRename (documentID, name, x, y) {
-  $DocumentRenameModalMenu.style.display = 'block'
-  $DocumentRenameModalMenu.style.left = x + 'px'
-  $DocumentRenameModalMenu.style.top = y - 50 + 'px'
-  const $name = $DocumentRenameModalMenu.querySelector(
-    '#DocumentRenameModalMenu-name'
-  )
+function showModalMenuOfFileRename (fileID, name, x, y) {
+  $FileRenameModalMenu.style.display = 'block'
+  $FileRenameModalMenu.style.left = `${x}px`
+  $FileRenameModalMenu.style.top = `${y - 50}px`
+  const $name = $FileRenameModalMenu.querySelector('#FileRenameModalMenu-name')
   $name.value = name
   $name.focus()
-  $DocumentRenameModalMenu.querySelector('#DocumentRenameModalMenu-id').value =
-    documentID
+  $FileRenameModalMenu.querySelector('#fileRenameModalMenu-id').value = fileID
 }
 
 // BLOCK: Explorer Pane
+const $LeftPane = document.querySelector('.LeftPaneContainer')
 const $explorerPane = document.getElementById('explorer')
-const $folderItems = $explorerPane.getElementsByClassName('FolderItem')
-const $documentItems = $explorerPane.getElementsByClassName('DocumentItem')
 
-for (let i = 0; i < $folderItems.length; i++) {
-  const $folderItem = $folderItems[i]
+applyClassElements('explorer-toggle', ($toggle) => {
+  $toggle.addEventListener('click', () => {
+    if ($LeftPane.style.display === 'block') {
+      $LeftPane.style.display = 'none'
+    } else {
+      $LeftPane.style.display = 'block'
+    }
+  })
+})
+
+applyClassElements('explorer-close', ($close) => {
+  $close.addEventListener('click', () => {
+    $LeftPane.style.display = 'none'
+  })
+})
+
+applyClassElements('explorer-open', ($open) => {
+  $open.addEventListener('click', () => {
+    $LeftPane.style.display = 'block'
+  })
+})
+
+applyClassElements('FolderItem', ($folderItem) => {
   const $folderItemHeader = $folderItem.querySelector('.FolderItem-header')
   const $folderChildren = $folderItem.querySelector('.pane-item-children')
   $folderItemHeader.addEventListener('click', () => {
@@ -102,20 +117,17 @@ for (let i = 0; i < $folderItems.length; i++) {
   $folderItemHeader.addEventListener('contextmenu', (event) => {
     showContextMenu($folderContextMenu, event.pageX, event.pageY)
   })
-}
+})
 
-for (let i = 0; i < $documentItems.length; i++) {
-  const $documentItem = $documentItems[i]
-  const $documentItemHeader = $documentItem.querySelector(
-    '.DocumentItem-header'
-  )
+applyClassElements('FileItem', ($fileItem) => {
+  const $fileItemHeader = $fileItem.querySelector('.FileItem-header')
   // NOTE: ここでファイルを開く
-  $documentItemHeader.addEventListener('click', () => {
-    if ($documentItem.classList.contains('file-open')) {
-      const rect = $documentItem.getBoundingClientRect()
-      showModalMenuOfDocumentRename(
-        $documentItem.id.replace('Document-', ''),
-        $documentItemHeader.querySelector('.DocumentItem-title').textContent,
+  $fileItemHeader.addEventListener('click', () => {
+    if ($fileItem.classList.contains('file-open')) {
+      const rect = $fileItem.getBoundingClientRect()
+      showModalMenuOfFileRename(
+        $fileItem.id.replace('File-', ''),
+        $fileItemHeader.querySelector('.FileItem-title').textContent,
         rect.x,
         rect.y
       )
@@ -127,10 +139,10 @@ for (let i = 0; i < $documentItems.length; i++) {
       const $openFile = $opendFile[0]
       $openFile.classList.remove('file-open')
     }
-    $documentItem.classList.add('file-open')
+    $fileItem.classList.add('file-open')
     // NOTE: redirect file preview and editor
   })
-  $documentItemHeader.addEventListener('contextmenu', (event) => {
-    showContextMenu($documentContextMenu, event.pageX, event.pageY)
+  $fileItemHeader.addEventListener('contextmenu', (event) => {
+    showContextMenu($fileContextMenu, event.pageX, event.pageY)
   })
-}
+})
