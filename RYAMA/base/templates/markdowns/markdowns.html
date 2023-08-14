@@ -25,19 +25,21 @@
                         {% recursetree markdowns %}
                         {% if node.is_explorer %}
                             {% if not node.is_leaf_node %}{{ children }}{% endif %}
-                            {% if node.documents.all %}
-                                {% for document in node.documents.all %}
-                                    <div class="DocumentItem" id="Document-{{ document.id }}">
-                                        <div class="DocumentItem-header pane-item-header">
-                                            <div class="DocumentItem-toggler pane-item-toggler"></div>
-                                            <i class="DocumentItem-icon pane-item-icon ph ph-file-text"></i>
-                                            <div class="DocumentItem-title pane-item-title" spellcheck="false">{{ document }}</div>
+                            {% if node.files.all %}
+                                {% for file in node.files.all %}
+                                    <div class="FileItem"
+                                         id="File-{{ file.id }}"
+                                         data-url="{% url 'file' id=file.id %}">
+                                        <div class="FileItem-header pane-item-header">
+                                            <div class="FileItem-toggler pane-item-toggler"></div>
+                                            <i class="FileItem-icon pane-item-icon ph ph-file-text"></i>
+                                            <div class="FileItem-title pane-item-title" spellcheck="false">{{ file }}</div>
                                         </div>
                                     </div>
                                 {% endfor %}
                             {% endif %}
                         {% else %}
-                            {% if node.is_leaf_node or node.documents.all %}
+                            {% if node.is_leaf_node or node.files.all %}
                                 <div class="FolderItem parent-item" id="Folder-{{ node.id }}">
                                     <div class="FolderItem-header pane-item-header">
                                         <div class="FolderItem-toggler icon pane-item-toggler"></div>
@@ -46,13 +48,15 @@
                                     </div>
                                     <div class="pane-item-children">
                                         {% if not node.is_leaf_node %}{{ children }}{% endif %}
-                                        {% if node.documents.all %}
-                                            {% for document in node.documents.all %}
-                                                <div class="DocumentItem" id="Document-{{ document.id }}">
-                                                    <div class="DocumentItem-header pane-item-header">
-                                                        <div class="DocumentItem-toggler pane-item-toggler"></div>
-                                                        <i class="DocumentItem-icon pane-item-icon ph ph-file-text"></i>
-                                                        <div class="DocumentItem-title pane-item-title" spellcheck="false">{{ document }}</div>
+                                        {% if node.files.all %}
+                                            {% for file in node.files.all %}
+                                                <div class="FileItem"
+                                                     id="File-{{ file.id }}"
+                                                     data-url="{% url 'file' id=file.id %}">
+                                                    <div class="FileItem-header pane-item-header">
+                                                        <div class="FileItem-toggler pane-item-toggler"></div>
+                                                        <i class="FileItem-icon pane-item-icon ph ph-file-text"></i>
+                                                        <div class="FileItem-title pane-item-title" spellcheck="false">{{ file }}</div>
                                                     </div>
                                                 </div>
                                             {% endfor %}
@@ -86,7 +90,7 @@
                         </li>
                     </ul>
                 </nav>
-                <a href="/" class="icon">
+                <a href="/" class="options">
                     <img src="{% static 'images/icon.png' %}"
                          alt="icon"
                          height="36px"
@@ -94,30 +98,31 @@
                 </a>
             </div>
         </div>
+        <div class="markdown"></div>
     </div>
 </div>
 <div class="ModalMenus">
-    <div class="ModalMenu DocumentRenameModalMenu">
+    <div class="ModalMenu FileRenameModalMenu">
         <div class="ModalMenu-content">
             <div class="ModalMenu-body">
                 <form method="post" autocomplete="off">
-                    <label for="DocumentRenameModalMenu-name">Rename for:</label>
+                    <label for="FileRenameModalMenu-name">Rename for:</label>
                     <input type="text"
                            name="name"
-                           id="DocumentRenameModalMenu-name"
+                           id="FileRenameModalMenu-name"
                            value=""
                            spellcheck="off"
                            required>
-                    <input type="hidden" name="id" id="DocumentRenameModalMenu-id" required>
+                    <input type="hidden" name="id" id="FileRenameModalMenu-id" required>
                 </form>
             </div>
         </div>
     </div>
 </div>
 <div class="ContextMenus">
-    <div class="ContextMenu DocumentContextMenu">
+    <div class="ContextMenu FileContextMenu">
         <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem ContextMenuItem--documentPublish">
+            <li class="ContextMenuItem ContextMenuItem--filePublish">
                 <i class="ContextMenuItem-icon ph ph-users"></i>
                 <span class="ContextMenuItem-name">Manage Publish</span>
             </li>
@@ -127,15 +132,15 @@
                 <i class="ContextMenuItem-icon ph ph-star"></i>
                 <span class="ContextMenuItem-name">Add to bookmark</span>
             </li>
-            <li class="ContextMenuItem ContextMenuItem--documentCopy">
+            <li class="ContextMenuItem ContextMenuItem--fileCopy">
                 <i class="ContextMenuItem-icon ph ph-files"></i>
                 <span class="ContextMenuItem-name">Make a copy</span>
             </li>
-            <li class="ContextMenuItem ContextMenuItem--documentRename">
+            <li class="ContextMenuItem ContextMenuItem--fileRename">
                 <i class="ContextMenuItem-icon ph ph-pencil"></i>
                 <span class="ContextMenuItem-name">Rename</span>
             </li>
-            <li class="ContextMenuItem ContextMenuItem--documentDelete">
+            <li class="ContextMenuItem ContextMenuItem--fileDelete">
                 <i class="ContextMenuItem-icon ph ph-eraser"></i>
                 <span class="ContextMenuItem-name">Delete</span>
             </li>
@@ -143,9 +148,9 @@
     </div>
     <div class="ContextMenu FolderContextMenu">
         <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem ContextMenuItem--newDocument">
+            <li class="ContextMenuItem ContextMenuItem--newFile">
                 <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
-                <span class="ContextMenuItem-name">New document</span>
+                <span class="ContextMenuItem-name">New file</span>
             </li>
             <li class="ContextMenuItem ContextMenuItem--newFolder">
                 <i class="ContextMenuItem-icon ph ph-file-plus"></i>
@@ -171,9 +176,9 @@
     </div>
     <div class="ContextMenu ExplorerBodyContextMenu">
         <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem Explorer--NewDocument">
+            <li class="ContextMenuItem Explorer--NewFile">
                 <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
-                <span class="ContextMenuItem-name">New document</span>
+                <span class="ContextMenuItem-name">New file</span>
             </li>
             <li class="ContextMenuItem Explorer--NewFolder">
                 <i class="ContextMenuItem-icon ph ph-file-plus"></i>

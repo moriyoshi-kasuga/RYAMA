@@ -28,8 +28,15 @@ body {
   font-size: 36px;
 }
 
-#header .icon {
-  margin-bottom: 1%;
+#header .options {
+  margin-bottom: 12px;
+}
+
+.header-inner .explorer-toggle:hover{
+  cursor: pointer;
+  background-color: #1C676D;
+  border-radius: 5px;
+  transform: scale(110%);
 }
 
 .area-nav-header {
@@ -72,8 +79,8 @@ body {
   font-size: 18px;
   resize: horizontal;
   overflow: hidden;
-  max-width: 600px;
-  min-width: 150px;
+  max-width: 400px;
+  min-width: 205px;
   box-shadow: 0 1px 0 1px #222222;
 }
 
@@ -90,7 +97,14 @@ body {
   height: 100%;
 }
 
-.LeftPaneContainer-panes .Pane-headerToolbar > * + * {
+.LeftPaneContainer-panes .Pane-header i:hover{
+  background-color: #1C676D;
+  cursor: pointer;
+  border-radius: 5px;
+  transform: scale(200%);
+}
+
+.LeftPaneContainer-panes .Pane-headerToolbar > i + i {
   margin-left: 5px;
 }
 
@@ -101,6 +115,7 @@ body {
   position: absolute;
   text-align: center;
 }
+
 
 .LeftPaneContainer-panes i {
   vertical-align: -2px;
@@ -131,8 +146,12 @@ body {
   transition: all 0.2s;
 }
 
-.DocumentItem.file-open > .pane-item-header {
+.FileItem.file-open > .pane-item-header {
   background-color: #343434;
+}
+
+.FileItem.file-open > .FileItem-header {
+  font-weight: bold;
 }
 
 .pane-item-toggler {
@@ -162,9 +181,6 @@ body {
   word-wrap: break-word;
 }
 
-.DocumentItem.file-open > .DocumentItem-header {
-  font-weight: bold;
-}
 
 .pane-item-title.is-beinEdited {
   background: #343434;
@@ -173,14 +189,6 @@ body {
   outline: 0;
   padding: 0 10px 0 2px;
   cursor: text;
-}
-
-.icon {
-  font-style: normal;
-  font-family: "Phosphor" !important;
-  font-weight: normal;
-  font-variant: normal;
-  line-height: 1;
 }
 
 .FolderItem.parent-item > .pane-item-header .pane-item-toggler:before {
@@ -291,6 +299,14 @@ input {
   background-color: #181818;
   border: 1px solid #415556;
   color: #1dc9d6;
+}
+
+.icon {
+  font-style: normal;
+  font-family: "Phosphor" !important;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
 }
 
 ::-webkit-scrollbar {

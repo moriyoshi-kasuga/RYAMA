@@ -14,4 +14,5 @@ urlpatterns = [
     path("features/", views.page_features, name="features"),
     path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
     path("markdowns/", views.page_markdowns, name="markdowns"),
+    path("markdowns/<int:id>", views.page_markdowns, name="file"),
 ]

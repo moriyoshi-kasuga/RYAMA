@@ -1,10 +1,3 @@
-function applyClassElements(className, elementLambda) {
-  const $clazz = document.getElementsByClassName(className);
-  for (let i = 0; i < $clazz.length; i += 1) {
-    elementLambda($clazz[i]);
-  }
-}
-
 // BLOCK: ContextMenus
 let enableContextMenu = null;
 const $contextMenus = document.querySelector('.ContextMenus');
@@ -31,7 +24,7 @@ document.addEventListener('click', () => {
   resetContextMenu();
 });
 
-applyClassElements('PaneBody', ($Pane) => {
+document.querySelectorAll('.PaneBody').forEach(($Pane) => {
   $Pane.addEventListener('contextmenu', (event) => {
     if (event.target === event.currentTarget) {
       console.log(`${event.target.id}ContextMenu`);
@@ -45,9 +38,10 @@ applyClassElements('PaneBody', ($Pane) => {
 });
 
 // BLOCK: ModalMenus
+
 const $modalMenus = document.querySelector('.ModalMenus');
 
-applyClassElements('ModalMenu', ($modalMenu) => {
+$modalMenus.querySelectorAll('.ModalMenu').forEach(($modalMenu) => {
   $modalMenu.addEventListener('click', (event) => {
     if (event.target === event.currentTarget) {
       $modalMenu.style.display = 'none';
@@ -70,14 +64,14 @@ function showModalMenuOfFileRename(fileID, name, x, y) {
   const $name = $FileRenameModalMenu.querySelector('#FileRenameModalMenu-name');
   $name.value = name;
   $name.focus();
-  $FileRenameModalMenu.querySelector('#fileRenameModalMenu-id').value = fileID;
+  $FileRenameModalMenu.querySelector('#FileRenameModalMenu-id').value = fileID;
 }
 
 // BLOCK: Explorer Pane
 const $LeftPane = document.querySelector('.LeftPaneContainer');
 const $explorerPane = document.getElementById('explorer');
 
-applyClassElements('explorer-toggle', ($toggle) => {
+document.querySelectorAll('.explorer-toggle').forEach(($toggle) => {
   $toggle.addEventListener('click', () => {
     if ($LeftPane.style.display === 'block') {
       $LeftPane.style.display = 'none';
@@ -87,19 +81,19 @@ applyClassElements('explorer-toggle', ($toggle) => {
   });
 });
 
-applyClassElements('explorer-close', ($close) => {
+document.querySelectorAll('.explorer-close').forEach(($close) => {
   $close.addEventListener('click', () => {
     $LeftPane.style.display = 'none';
   });
 });
 
-applyClassElements('explorer-open', ($open) => {
+document.querySelectorAll('.explorer-open').forEach(($open) => {
   $open.addEventListener('click', () => {
     $LeftPane.style.display = 'block';
   });
 });
 
-applyClassElements('FolderItem', ($folderItem) => {
+$explorerPane.querySelectorAll('.FolderItem').forEach(($folderItem) => {
   const $folderItemHeader = $folderItem.querySelector('.FolderItem-header');
   const $folderChildren = $folderItem.querySelector('.pane-item-children');
   $folderItemHeader.addEventListener('click', () => {
@@ -119,7 +113,7 @@ applyClassElements('FolderItem', ($folderItem) => {
   });
 });
 
-applyClassElements('FileItem', ($fileItem) => {
+$explorerPane.querySelectorAll('.FolderItem', ($fileItem) => {
   const $fileItemHeader = $fileItem.querySelector('.FileItem-header');
   // NOTE: ここでファイルを開く
   $fileItemHeader.addEventListener('click', () => {
