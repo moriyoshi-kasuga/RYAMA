@@ -36,58 +36,39 @@ style page_markdowns color:yellow
 
 # Markdowns Page
 
-## SideBard Action
+refrence: https://stackedit.io/app#
 
-### Cliked Empty
+## どのようにMarkdownパージを表示するか
 
-```mermaid
-flowchart TD;
+### Explorer
 
-close_explorer((Close Explorer))
-create_folder((Create Folder)) & create_file((Create File)) --> input_name(Input name of Create)
-input_name --> if_inputted{if Name is inputted}
-if_inputted --> |yes| create_success(Createted That Name)
-if_inputted --> |no| not_create(Don't Create That)
-```
+#### Click of Folder
+クリックしたら[**LocalStorage**](https://www.youtube.com/watch?v=uuAdVs7sbAs)に**openFolders**のキーに、  
+**list** で保存して、それで**FolderItem** に**open-folder** みたいな**className** を追加しよう。  
+(これで仮にページをリロードしたりしても保存しておける)
+### Click of File
+クリックしたら **/markdonws/${file.id}** としてそこにurlをチェンジする,  
+そしてファイルの**className** に **active-file** を付与して選択してるよ、というのを見えるようにする。  
+ここでもしかりに、そのファイルがない場合、他人のファイルの場合は **/markdonws** に戻るようにしよう。  
 
----
 
-### Cliked Folder
-
-```mermaid
-flowchart TD;
-
-create_folder((Create Folder))
-create_file((Create File))
-publish((Set Publish))
-rename((Folder Rename))
-delte((Folder Delete))
-```
+これらがuser tokenだったりreactでのlogin,logoutだったりのUser関係の参考記事,  
+(多分ここさえできてしまえば、あとはreactをちょっと勉強するだけだからだいぶ、ラストスパート)  
+https://note.crohaco.net/2018/django-rest-framework-view/  
+https://qiita.com/okoppe8/items/c58bb3faaf26c9e2f27f  
+https://qiita.com/shun198/items/268f6e98dbc11fac1831  
+https://qiita.com/shun198/items/067e122bb291fed2c839  
+https://qiita.com/tomoyukiy/items/a282b2c97ae2bbedac33  
+https://qiita.com/Bashi50/items/8964cc55c596e51fcbbe  
 
 ---
 
-### Cliked File
-
 ```mermaid
-flowchart TD;
+sequenceDiagram;
 
-publish((This File to publishk wk))
-copy((Copy This File))
-bookmark((This File to Bookmark))
-rename((This File Name change))
-delte((This File delte))
-```
+participant frontend
+participant backend
 
-## Design
+frontend ->> backend:fsdaf
 
-```mermaid
-flowchart TD;
-close(Closed Menus)
-close --> clicked_mark{Cliked Mark}
-clicked_mark --> |Explorer| open_explorer(Open Explorer Tab)
-clicked_mark --> |Bookmark| open_bookmark(Open Bookmark Tab)
-clicked_mark --> |alerdy opented| opend_tab{Alerady opened tab}
-opend_tab --> |Open Explorer and Click Bookmark| open_bookmark
-opend_tab --> |Open Bookmark and Click Explorer| open_explorer
-opend_tab --> |Click and Open are the same| close
 ```
