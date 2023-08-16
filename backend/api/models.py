@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -5,6 +7,14 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 
 class Folder(MPTTModel):
+    id = models.UUIDField(
+        verbose_name=_("folder id"),
+        help_text=_("immutable id"),
+        primary_key=True,
+        editable=False,
+        default=uuid.uuid4,
+    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="folders")
 
     name = models.CharField(
@@ -16,10 +26,6 @@ class Folder(MPTTModel):
 
     parent = TreeForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
-    )
-
-    is_published = models.BooleanField(
-        verbose_name=_("publish"), help_text=_("Check Published"), default=False
     )
 
     is_explorer = models.BooleanField(
@@ -41,13 +47,24 @@ class Folder(MPTTModel):
 
 
 class File(models.Model):
+    id = models.UUIDField(
+        verbose_name=_("file id"),
+        help_text=_("immutable id"),
+        primary_key=True,
+        editable=False,
+        default=uuid.uuid4,
+    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="files")
 
     parent = models.ForeignKey(Folder, on_delete=models.CASCADE, related_name="files")
+
     name = models.CharField(
         verbose_name=_("name"), help_text=_("Required"), max_length=50
     )
+
     file = models.TextField(verbose_name=_("content"), help_text=_("file"), blank=True)
+
     is_published = models.BooleanField(
         verbose_name=_("publish"), help_text=_("Check Published"), default=False
     )

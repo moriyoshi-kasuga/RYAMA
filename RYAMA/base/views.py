@@ -1,8 +1,13 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
-from django.shortcuts import redirect, render
+from django.contrib.auth.views import LoginView
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
 
-from .models import Folder
+from .models import File, Folder
 
 
 def page_home(request, *args, **kwargs):
@@ -29,13 +34,32 @@ def page_features(request, *args, **kwargs):
     return render(request, "homes/features.html")
 
 
-def page_login(request, *args, **kwargs):
-    return render(request, "homes/login.html")
+class Login(LoginView):
+    template_name = "homes/login.html"
 
 
 def page_signup(request, *args, **kwargs):
     return render(request, "homes/signup.html")
 
 
-def page_markdowns(request, *args, **kwargs):
-    return render(request, "markdowns.html", {"markdowns": Folder.objects.all()})
+# NOTE: Markdowns
+
+
+def page_markdowns(request):
+    context = {}
+    user = request.user
+    if not user.is_authenticated:
+        return redirect("login")
+    if len(Folder.objects.filter(user=user, is_explorer=True)) == 0:
+        Folder.objects.create(user=user, name=user.username, is_explorer=True)
+    # if request == "POST":
+    context["markdowns"] = Folder.objects.filter(user=user)
+    return render(request, "markdowns/markdowns.html", context)
+
+
+def view_file(request):
+    id = request.POST.get("id")
+    context = {"id": id}
+    file = get_object_or_404(File, user=request.user, id=id)
+    context["body"] = file.file
+    return JsonResponse(context)

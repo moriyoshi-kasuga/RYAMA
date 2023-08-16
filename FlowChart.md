@@ -34,44 +34,41 @@ style action_signup color:yellow
 style page_markdowns color:yellow
 ```
 
-## Markdowns Page
+# Markdowns Page
 
-### Cliked Empty
+refrence: https://stackedit.io/app#
 
-```mermaid
-flowchart TD;
+## どのようにMarkdownパージを表示するか
 
-close_explorer((Close Explorer))
-create_folder((Create Folder)) & create_file((Create File)) --> input_name(Input name of Create)
-input_name --> if_inputted{if Name is inputted}
-if_inputted --> |yes| create_success(Createted That Name)
-if_inputted --> |no| not_create(Don't Create That)
-```
+### Explorer
+
+#### Click of Folder
+クリックしたら[**LocalStorage**](https://www.youtube.com/watch?v=uuAdVs7sbAs)に**openFolders**のキーに、  
+**list** で保存して、それで**FolderItem** に**open-folder** みたいな**className** を追加しよう。  
+(これで仮にページをリロードしたりしても保存しておける)
+### Click of File
+クリックしたら **/markdonws/${file.id}** としてそこにurlをチェンジする,  
+そしてファイルの**className** に **active-file** を付与して選択してるよ、というのを見えるようにする。  
+ここでもしかりに、そのファイルがない場合、他人のファイルの場合は **/markdonws** に戻るようにしよう。  
+
+
+これらがuser tokenだったりreactでのlogin,logoutだったりのUser関係の参考記事,  
+(多分ここさえできてしまえば、あとはreactをちょっと勉強するだけだからだいぶ、ラストスパート)  
+https://note.crohaco.net/2018/django-rest-framework-view/  
+https://qiita.com/okoppe8/items/c58bb3faaf26c9e2f27f  
+https://qiita.com/shun198/items/268f6e98dbc11fac1831  
+https://qiita.com/shun198/items/067e122bb291fed2c839  
+https://qiita.com/tomoyukiy/items/a282b2c97ae2bbedac33  
+https://qiita.com/Bashi50/items/8964cc55c596e51fcbbe  
 
 ---
 
-### Cliked Folder
-
 ```mermaid
-flowchart TD;
+sequenceDiagram;
 
-create_folder((Create Folder))
-create_file((Create File))
-publish((Set Publish))
-rename((Folder Rename))
-delte((Folder Delete))
-```
+participant frontend
+participant backend
 
----
+frontend ->> backend:fsdaf
 
-### Cliked File
-
-```mermaid
-flowchart TD;
-
-publish((This File to publishk wk))
-copy((Copy This File))
-bookmark((This File to Bookmark))
-rename((This File Name change))
-delte((This File delte))
 ```
