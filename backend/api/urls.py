@@ -4,7 +4,12 @@ from rest_framework import routers
 from . import views
 
 router = routers.DefaultRouter()
-router.register(r"folders", views.FolderView, "folder")
-router.register(r"files", views.FileView, "file")
+router.register(r"folders", views.FolderView, "folders")
+router.register(r"files", views.FileView, "files")
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [
+    path(
+        "",
+        include(router.urls),
+    )
+]
