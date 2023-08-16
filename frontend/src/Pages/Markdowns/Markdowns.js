@@ -4,7 +4,12 @@ function MarkdownsPage() {
   const [folders, setFolders] = useState([]);
 
   const getFolders = async () => {
-    const response = await fetch('http://127.0.0.1:8000/api/folders/');
+    const response = await fetch('http://127.0.0.1:8000/api/folders/', {
+      method: 'GET',
+      // headers: {
+      //   Authorization: `Token ${props.token}`,
+      // },
+    });
     const data = await response.json();
     console.log('Data:', data);
     setFolders(data);
@@ -18,7 +23,7 @@ function MarkdownsPage() {
     <div>
       <div className="markdonws">
         {folders.map((folder) => (
-          <h3>
+          <h3 key={folder.id}>
             {folder.id}
             ,
             {folder.name}

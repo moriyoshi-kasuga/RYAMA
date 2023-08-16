@@ -1,9 +1,15 @@
-import MarkdownsPage from './pages/MarkdownsPage';
+import { Routes, Route } from 'react-router-dom';
+
+import Markdowns from './Pages/Markdowns/Markdowns';
+import BaseHome from './Pages/Homes/BaseHome';
 
 function App() {
   return (
     <div className="App">
-      <MarkdownsPage />
+      <Routes>
+        <Route path="/markdowns" element={<Markdowns />} />
+        <Route path="*" element={<BaseHome />} />
+      </Routes>
     </div>
   );
 }
