@@ -2,6 +2,7 @@
 {% load static %}
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/markdowns/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/markdowns/markdown.css' %}" />
 {% endblock head %}
 {% block content %}
     <div id="layout">
@@ -98,7 +99,10 @@
                 </a>
             </div>
         </div>
-        <div class="markdown"></div>
+        <div id="markdown">
+            {% block markdown %}
+            {% endblock markdown %}
+        </div>
     </div>
 </div>
 <div class="ModalMenus">

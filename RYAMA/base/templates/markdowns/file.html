@@ -1,0 +1,9 @@
+{% extends 'markdowns/markdowns.html' %}
+{% block markdown %}
+    <textarea id="file">{{file}}</textarea>
+    <section class="markdown-body">
+        {{ markdown|safe }}
+    </section>
+    {% load static %}
+    <script src="{% static 'js/markdowns/file.js'%}"></script>
+{% endblock markdown %}
