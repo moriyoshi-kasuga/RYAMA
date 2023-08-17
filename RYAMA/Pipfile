@@ -6,9 +6,8 @@ name = "pypi"
 [packages]
 django = "*"
 django-mptt = "*"
-djangorestframework = "*"
-django-cors-headers = "*"
-djangorestframework-simplejwt = "*"
+django-browser-reload = "*"
+mistletoe = "*"
 
 [dev-packages]
 

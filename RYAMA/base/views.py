@@ -1,8 +1,11 @@
+import json
+
+import mistletoe
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
@@ -57,9 +60,40 @@ def page_markdowns(request):
     return render(request, "markdowns/markdowns.html", context)
 
 
-def view_file(request):
-    id = request.POST.get("id")
+def page_file(request, id):
+    context = {}
+    user = request.user
+    if not user.is_authenticated:
+        return redirect("login")
+    filter = File.objects.filter(user=user, id=id)
+    if len(filter) == 0:
+        return redirect("markdowns")
+    file = filter.first()
+    context["markdowns"] = Folder.objects.filter(user=user)
+    context["file"] = file.file
+    context["markdown"] = mistletoe.markdown(file.file)
+    return render(request, "markdowns/file.html", context)
+
+
+def save_file(request):
+    if request.method == "POST":
+        context = json.loads(request.body)
+        id = context["id"]
+        body = context["body"]
+        file = get_object_or_404(File, user=request.user, id=id)
+        file.file = body
+        file.save()
+        return JsonResponse({"success": True})
+
+
+def view_file(request, id):
     context = {"id": id}
     file = get_object_or_404(File, user=request.user, id=id)
     context["body"] = file.file
     return JsonResponse(context)
+
+
+def preview_file(request):
+    if request.method == "POST":
+        context = json.loads(request.body)["content"]
+        return HttpResponse(mistletoe.markdown(context))
