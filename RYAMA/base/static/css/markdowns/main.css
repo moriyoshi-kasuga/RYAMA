@@ -21,7 +21,7 @@ body {
   flex-direction: row;
 }
 
-#file {
+#content {
   border: none;
   box-shadow: none;
   width: 50%;
@@ -32,7 +32,7 @@ body {
   height: calc(100vh - 40px);
 }
 
-#file:focus {
+#content:focus {
   border: none;
   outline: none;
 }
@@ -40,6 +40,7 @@ body {
 .markdown-body {
   width: 50%;
   height: calc(100vh - 40px);
+  overflow-y: scroll;
 }
 
 /*BLOCK: HEADEr*/
@@ -154,9 +155,12 @@ body {
 }
 
 .PaneBody {
+  height: calc(100% - 46px);
+  position: relative;
+  padding: 10px 0;
   overflow: auto;
-  height: calc(100% - 26px);
 }
+
 
 .pane-item-header {
   color: #1dc9d6;
@@ -198,7 +202,7 @@ body {
 }
 
 .pane-item-children {
-  padding-left: 15px;
+  padding-left: 20px;
   display: none;
 }
 
@@ -209,13 +213,30 @@ body {
 }
 
 
-.pane-item-title.is-beinEdited {
+.pane-item-input {
   background: #343434;
   user-select: text;
   border: 1px solid #666666;
   outline: 0;
   padding: 0 10px 0 2px;
   cursor: text;
+  overflow: hidden;
+}
+
+.FolderItem > .pane-item-header .pane-item-rename {
+  display: none;
+}
+
+.FolderItem.rename-item > .pane-item-header .pane-item-rename {
+  display: inline;
+}
+
+.FolderItem.rename-item > .pane-item-header .FolderItem-title { 
+  display: none;
+}
+
+.FolderItem.folder-open > .pane-item-children {
+  display: block;
 }
 
 .FolderItem.parent-item > .pane-item-header .pane-item-toggler:before {
@@ -228,57 +249,6 @@ body {
   content: "\e9fe";
 }
 
-.ModalMenu {
-  color: #1dc9d6;
-  position: fixed;
-  z-index: 401;
-  user-select: none;
-  display: none;
-  height: 100%;
-  width: 100%;
-}
-
-.ModalMenu-content {
-  background: #181818;
-  border: 1px solid #3a777b;
-  width: fit-content;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.ModalMenu-header {
-  padding: 15px 15px;
-  display: flex;
-  font-size: 2rem;
-  font-weight: 500;
-  justify-content: space-between;
-}
-
-.ModalMenu-close {
-  right: 0;
-  top: 0;
-  font-size: 2rem;
-}
-
-.ModalMenu-close:hover {
-  cursor: pointer;
-}
-
-.ModalMenu-header + .ModalMenu-body {
-  border-top: 1px solid #3a777b;
-}
-
-.ModalMenu-body {
-  padding: 10px 20px;
-}
-
-.ModalMenu-body form {
-  display: flex;
-  align-items: center;
-}
-
-.ModalMenu-body form * {
-  margin: 2px;
-}
 
 .ContextMenu {
   color: #1dc9d6;
@@ -302,6 +272,10 @@ body {
   position: relative;
   cursor: pointer;
   padding: 4px 30px 4px 10px;
+}
+
+.ContextMenuItem:hover{
+  background-color: #1C676D;
 }
 
 .ContextMenuItem-icon {
@@ -360,4 +334,8 @@ input {
 
 ::selection {
   background: rgba(10, 71, 76, 0.99);
+}
+
+.invisible {
+  display: none;
 }
