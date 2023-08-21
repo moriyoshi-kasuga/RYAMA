@@ -34,44 +34,30 @@ style action_signup color:yellow
 style page_markdowns color:yellow
 ```
 
-## Markdowns Page
+# Markdowns Page
 
-### Cliked Empty
+refrence: https://stackedit.io/app#
 
-```mermaid
-flowchart TD;
+## どのようにMarkdownパージを表示するか
 
-close_explorer((Close Explorer))
-create_folder((Create Folder)) & create_file((Create File)) --> input_name(Input name of Create)
-input_name --> if_inputted{if Name is inputted}
-if_inputted --> |yes| create_success(Createted That Name)
-if_inputted --> |no| not_create(Don't Create That)
-```
+### Explorer
 
----
+- create telescope filter file
+- Render Explorer
+- '.open-file' add to class of ActiveFile localStorage Id FileItem
+- input event of '#file' to render makrdonw of '.markdown-body'
+- chagne envet of '#file' to save change of it file id
+- click folderItem to opensFolder localStorage
 
-### Cliked Folder
+#### Right Click of Folder
 
-```mermaid
-flowchart TD;
 
-create_folder((Create Folder))
-create_file((Create File))
-publish((Set Publish))
-rename((Folder Rename))
-delte((Folder Delete))
-```
+- show Modal 
+    > hover で 何か色付けよう
+    - Delete
+    - 
 
----
-
-### Cliked File
-
-```mermaid
-flowchart TD;
-
-publish((This File to publishk wk))
-copy((Copy This File))
-bookmark((This File to Bookmark))
-rename((This File Name change))
-delte((This File delte))
-```
+markdowns/<int:id> に対して、
+これは普通に/markdownsにredirectして、
+最初からidのファイルが開かれてるよであとは全部ajaxでスムーズにしたほうがなんか気がいいと思う.
+Folder,FileのidをuuidFieldにしよう。

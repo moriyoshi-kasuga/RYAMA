@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/markdowns/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/markdowns/markdown.css' %}" />
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/tokyo-night-dark.min.css">
+{% endblock head %}
+{% block content %}
+    <div id="layout">
+        <div class="LeftPaneContainer" onContextmenU="return false;">
+            <div class="LeftPaneContainer-panes">
+                <div class="Pane" id="explorer">
+                    <div class="Pane-header">
+                        <div class="Pane-headerToolbar">
+                            <i class="ph ph-file-search"></i>
+                        </div>
+                        <div class="explorer-close">
+                            <i class="ph ph-x"></i>
+                        </div>
+                    </div>
+                    <div class="PaneBody" id="ExplorerBody"></div>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div id="header">
+                <div class="header-inner">
+                    <i class="ph ph-folder-simple explorer-toggle"></i>
+                    <nav class="area-nav-header">
+                        <ul class="list-nav-header">
+                            <li>
+                                <i class="ph ph-gear"></i>
+                            </li>
+                        </ul>
+                    </nav>
+                    <a href="/" class="options">
+                        <img src="{% static 'images/icon.png' %}"
+                             alt="icon"
+                             height="36px"
+                             width="36px">
+                    </a>
+                </div>
+            </div>
+            <div id="markdown"
+                 style="display:{{ is_explorer|yesno:'none,flex,flex' }}">
+                <textarea id="content" spellcheck="false">{{content}}</textarea>
+                <section class="markdown-body">
+                    {{ preview|safe }}
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="ContextMenus">
+        <div class="ContextMenu FileContextMenu">
+            <span class="fileId invisible"></span>
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--filePublish">
+                    <i class="ContextMenuItem-icon ph ph-users"></i>
+                    <span class="ContextMenuItem-name">Manage Publish</span>
+                </li>
+            </ul>
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--fileCopy">
+                    <i class="ContextMenuItem-icon ph ph-files"></i>
+                    <span class="ContextMenuItem-name">Make a copy</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--fileRename">
+                    <i class="ContextMenuItem-icon ph ph-pencil"></i>
+                    <span class="ContextMenuItem-name">Rename</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--fileDelete">
+                    <i class="ContextMenuItem-icon ph ph-eraser"></i>
+                    <span class="ContextMenuItem-name">Delete</span>
+                </li>
+            </ul>
+        </div>
+        <div class="ContextMenu FolderContextMenu">
+            <span class="folderId invisible"></span>
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--newFile">
+                    <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
+                    <span class="ContextMenuItem-name">New file</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--newFolder">
+                    <i class="ContextMenuItem-icon ph ph-file-plus"></i>
+                    <span class="ContextMenuItem-name">New folder</span>
+                </li>
+            </ul>
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--folderRename">
+                    <i class="ContextMenuItem-icon ph ph-pencil"></i>
+                    <span class="ContextMenuItem-name">Rename</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--folderDelete">
+                    <i class="ContextMenuItem-icon ph ph-eraser"></i>
+                    <span class="ContextMenuItem-name">Delete</span>
+                </li>
+            </ul>
+        </div>
+        <div class="ContextMenu ExplorerBodyContextMenu">
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--explorerNewFile">
+                    <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
+                    <span class="ContextMenuItem-name">New file</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--explorerNewFolder">
+                    <i class="ContextMenuItem-icon ph ph-file-plus"></i>
+                    <span class="ContextMenuItem-name">New folder</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script src="{% static 'js/markdowns/markdowns.js' %}"></script>
+{% endblock content %}

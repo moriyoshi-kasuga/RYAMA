@@ -1,3 +1,15 @@
 {% extends 'homes/base-home.html' %}
+{% block heads %}
+{% endblock heads %}
 {% block main %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            {{ field }}
+            {{ field.errors }}
+            <hr>
+        {% endfor %}
+        <button type="submit">ログイン</button>
+    </form>
 {% endblock main %}

@@ -1,0 +1,13 @@
+{% load mptt_tags %}
+{% recursetree markdowns %}
+{% if node.is_explorer %}
+    {% if not node.is_leaf_node %}{{ children }}{% endif %}
+    {% if node.files.all %}
+        {% for file in node.files.all %}
+            {% include "markdowns/file.html" %}
+        {% endfor %}
+    {% endif %}
+{% else %}
+    {% include "markdowns/folder.html" %}
+{% endif %}
+{% endrecursetree %}
