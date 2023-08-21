@@ -1,4 +1,5 @@
 import json
+from http import HTTPStatus
 
 import mistletoe
 from django.contrib.auth import authenticate, login
@@ -6,32 +7,35 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, JsonResponse
+from django.http.response import (Http404, HttpResponseNotAllowed,
+                                  HttpResponseNotFound)
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 
 from .models import File, Folder
 
 
-def page_home(request, *args, **kwargs):
+def page_home(request):
     if request.method == "GET":
         return render(request, "homes/home.html")
     return render(request, "homes/home.html")
 
 
-def page_publish(request, *args, **kwargs):
+def page_publish(request):
     if request.method == "GEt":
         return render(request, "homes/publish.html")
     return render(request, "homes/publish.html")
 
 
-def page_about(request, *args, **kwargs):
+def page_about(request):
     if request.method == "GET":
         return render(request, "homes/about.html")
     return render(request, "homes/about.html")
 
 
-def page_features(request, *args, **kwargs):
+def page_features(request):
     if request.method == "GET":
         return render(request, "homes/features.html")
     return render(request, "homes/features.html")
@@ -41,7 +45,7 @@ class Login(LoginView):
     template_name = "homes/login.html"
 
 
-def page_signup(request, *args, **kwargs):
+def page_signup(request):
     return render(request, "homes/signup.html")
 
 
@@ -49,51 +53,191 @@ def page_signup(request, *args, **kwargs):
 
 
 def page_markdowns(request):
-    context = {}
     user = request.user
     if not user.is_authenticated:
         return redirect("login")
-    if len(Folder.objects.filter(user=user, is_explorer=True)) == 0:
-        Folder.objects.create(user=user, name=user.username, is_explorer=True)
-    # if request == "POST":
-    context["markdowns"] = Folder.objects.filter(user=user)
+    context = {}
+    Folder.objects.get_or_create(user=user, is_explorer=True, name=user.username)
+    context["is_explorer"] = True
     return render(request, "markdowns/markdowns.html", context)
 
 
 def page_file(request, id):
-    context = {}
     user = request.user
     if not user.is_authenticated:
         return redirect("login")
+    context = {}
     filter = File.objects.filter(user=user, id=id)
     if len(filter) == 0:
         return redirect("markdowns")
     file = filter.first()
-    context["markdowns"] = Folder.objects.filter(user=user)
-    context["file"] = file.file
-    context["markdown"] = mistletoe.markdown(file.file)
-    return render(request, "markdowns/file.html", context)
+    context["content"] = file.content
+    context["preview"] = mistletoe.markdown(file.content)
+    context["active_file"] = id
+    return render(request, "markdowns/markdowns.html", context)
 
 
-def save_file(request):
-    if request.method == "POST":
-        context = json.loads(request.body)
-        id = context["id"]
-        body = context["body"]
-        file = get_object_or_404(File, user=request.user, id=id)
-        file.file = body
-        file.save()
-        return JsonResponse({"success": True})
+# NOTE:EMPTY
 
 
-def view_file(request, id):
-    context = {"id": id}
-    file = get_object_or_404(File, user=request.user, id=id)
-    context["body"] = file.file
-    return JsonResponse(context)
+def api_explorer_get(request):
+    user = request.user
+    if not user.is_authenticated:
+        return HttpResponseNotAllowed()
+    Folder.objects.get_or_create(user=user, is_explorer=True, name=user.username)
+    context = {"markdowns": Folder.objects.filter(user=user)}
+    return render(request, "markdowns/explorer.html", context=context)
 
 
-def preview_file(request):
-    if request.method == "POST":
-        context = json.loads(request.body)["content"]
-        return HttpResponse(mistletoe.markdown(context))
+def api_explorer_folder(request):
+    user = request.user
+    if not user.is_authenticated:
+        return HttpResponseNotAllowed()
+    explorer, created = Folder.objects.get_or_create(
+        user=user, is_explorer=True, name=user.username
+    )
+    match request.method:
+        case "POST":
+            folder = Folder.objects.create(user=user, parent=explorer, name="Empty")
+            response = {"status": True, "id": folder.id}
+            response["successHTML"] = render_to_string(
+                "markdowns/folder.html", {"node": folder}
+            )
+            return JsonResponse(response)
+
+
+def api_explorer_file(request):
+    user = request.user
+    if not user.is_authenticated:
+        return HttpResponseNotAllowed()
+    explorer, created = Folder.objects.get_or_create(
+        user=user, is_explorer=True, name=user.username
+    )
+    match request.method:
+        case "POST":
+            file = File.objects.create(
+                user=user,
+                parent=explorer,
+                name="Empty",
+            )
+            response = {"status": True, "id": file.id}
+            response["successHTML"] = render_to_string(
+                "markdowns/file.html", {"file": file}
+            )
+            return JsonResponse(response)
+
+
+def api_folder(request):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"status": False, "message": "not user logined"})
+    context = json.loads(request.body)
+    id = context["id"]
+    match request.method:
+        case "POST":
+            folder = Folder.objects.create(
+                user=user,
+                parent=Folder.objects.get(user=user, id=id),
+                name="Empty",
+            )
+            response = {"status": True, "id": folder.id}
+            response["successHTML"] = render_to_string(
+                "markdowns/folder.html", {"node": folder}
+            )
+            return JsonResponse(response)
+        case "GET":
+            return JsonResponse(
+                {
+                    "status": True,
+                    "files": list(Folder.objects.filter(user=user).values()),
+                }
+            )
+    try:
+        folder = Folder.objects.get(user=user, id=id)
+    except Exception:
+        return JsonResponse(
+            {"status": False, "message": "Folder not found."},
+        )
+    match request.method:
+        case "PUT":
+            name = context["name"]
+            folder.name = name
+            folder.save()
+            return JsonResponse(
+                {"status": True, "message": "success change Folder name.", "name": name}
+            )
+        case "DELETE":
+            folder.delete()
+            return JsonResponse(
+                {"status": True, "message": "Folder deleted."},
+            )
+    return JsonResponse(
+        {"status": False, "message": "No access with this method."},
+    )
+
+
+def api_file(request):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"status": False, "message": "not user logined"})
+    context = json.loads(request.body)
+    id = context["id"]
+    match request.method:
+        case "POST":
+            file = File.objects.create(
+                user=user,
+                parent=Folder.objects.get(user=user, id=id),
+                name="Empty",
+            )
+            response = {"status": True, "id": file.id}
+            response["successHTML"] = render_to_string(
+                "markdowns/file.html", {"file": file}
+            )
+            return JsonResponse(response)
+        case "GET":
+            return JsonResponse(
+                {
+                    "status": True,
+                    "files": list(File.objects.filter(user=user).values()),
+                }
+            )
+    try:
+        file = File.objects.get(user=user, id=id)
+    except Exception:
+        return JsonResponse(
+            {"status": False, "message": "File not found."},
+        )
+    match request.method:
+        case "PUT":
+            option = context["option"]
+            match option:
+                case "content":
+                    file.content = context["body"]
+                    file.save()
+                    return JsonResponse({"status": True})
+                case "name":
+                    name = context["name"]
+                    file.name = name
+                    file.save()
+                    return JsonResponse({"status": True, "name": name})
+        case "DELETE":
+            file.delete()
+            return JsonResponse(
+                {"status": True, "message": "File deleted."},
+            )
+    return JsonResponse(
+        {"status": False, "message": "No access with this method."},
+    )
+
+
+def api_file_get(request, id):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"status": False, "message": "not user logined"})
+    try:
+        file = File.objects.get(user=user, id=id)
+    except Exception:
+        return JsonResponse(
+            {"status": False, "message": "File not found."},
+        )
+    return JsonResponse({"status": True, "content": file.content})

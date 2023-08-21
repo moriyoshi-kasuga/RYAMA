@@ -1,9 +1,10 @@
-{% extends 'markdowns/markdowns.html' %}
-{% block markdown %}
-    <textarea id="file">{{file}}</textarea>
-    <section class="markdown-body">
-        {{ markdown|safe }}
-    </section>
-    {% load static %}
-    <script src="{% static 'js/markdowns/file.js'%}"></script>
-{% endblock markdown %}
+<div class="FileItem" id="File-{{ file.id }}">
+  <div class="FileItem-header pane-item-header">
+    <div class="FileItem-toggler pane-item-toggler"></div>
+    <i class="FileItem-icon pane-item-icon ph ph-file-text"></i>
+    <div class="FileItem-title pane-item-title" spellcheck="false">{{ file }}</div>
+    <form class="pane-item-rename pane-item-title">
+      <input class="pane-item-title pane-item-input" spellcheck="false">
+    </form>
+  </div>
+</div>

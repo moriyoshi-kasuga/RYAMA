@@ -3,6 +3,8 @@
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/markdowns/main.css' %}" />
     <link rel="stylesheet" href="{% static 'css/markdowns/markdown.css' %}" />
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/tokyo-night-dark.min.css">
 {% endblock head %}
 {% block content %}
     <div id="layout">
@@ -11,185 +13,105 @@
                 <div class="Pane" id="explorer">
                     <div class="Pane-header">
                         <div class="Pane-headerToolbar">
-                            <i class="ph ph-file-plus"></i>
-                            <i class="ph ph-folder-simple-plus"></i>
-                            <i class="ph ph-trash"></i>
-                            <i class="ph ph-pencil"></i>
                             <i class="ph ph-file-search"></i>
                         </div>
                         <div class="explorer-close">
                             <i class="ph ph-x"></i>
                         </div>
                     </div>
-                    <div class="PaneBody" id="ExplorerBody">
-                        {% load mptt_tags %}
-                        {% recursetree markdowns %}
-                        {% if node.is_explorer %}
-                            {% if not node.is_leaf_node %}{{ children }}{% endif %}
-                            {% if node.files.all %}
-                                {% for file in node.files.all %}
-                                    <div class="FileItem"
-                                         id="File-{{ file.id }}"
-                                         data-url="{% url 'file' id=file.id %}">
-                                        <div class="FileItem-header pane-item-header">
-                                            <div class="FileItem-toggler pane-item-toggler"></div>
-                                            <i class="FileItem-icon pane-item-icon ph ph-file-text"></i>
-                                            <div class="FileItem-title pane-item-title" spellcheck="false">{{ file }}</div>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% else %}
-                            {% if node.is_leaf_node or node.files.all %}
-                                <div class="FolderItem parent-item" id="Folder-{{ node.id }}">
-                                    <div class="FolderItem-header pane-item-header">
-                                        <div class="FolderItem-toggler icon pane-item-toggler"></div>
-                                        <i class="FolderItem-icon pane-item-icon ph ph-folder-simple"></i>
-                                        <div class="FolderItem-title pane-item-title" spellcheck="false">{{ node.name }}</div>
-                                    </div>
-                                    <div class="pane-item-children">
-                                        {% if not node.is_leaf_node %}{{ children }}{% endif %}
-                                        {% if node.files.all %}
-                                            {% for file in node.files.all %}
-                                                <div class="FileItem"
-                                                     id="File-{{ file.id }}"
-                                                     data-url="{% url 'file' id=file.id %}">
-                                                    <div class="FileItem-header pane-item-header">
-                                                        <div class="FileItem-toggler pane-item-toggler"></div>
-                                                        <i class="FileItem-icon pane-item-icon ph ph-file-text"></i>
-                                                        <div class="FileItem-title pane-item-title" spellcheck="false">{{ file }}</div>
-                                                    </div>
-                                                </div>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% else %}
-                                <div class="FolderItem empty-item" id="Folder-{{ node.id }}">
-                                    <div class="FolderItem-header pane-item-header">
-                                        <div class="FolderItem-toggler icon pane-item-toggler"></div>
-                                        <i class="FolderItem-icon pane-item-icon ph ph-folder-simple"></i>
-                                        <div class="FolderItem-title pane-item-title" spellcheck="false">{{ node.name }}</div>
-                                    </div>
-                                    <div class="pane-item-children"></div>
-                                </div>
-                            {% endif %}
-                        {% endif %}
-                    {% endrecursetree %}
+                    <div class="PaneBody" id="ExplorerBody"></div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="main">
-        <div id="header">
-            <div class="header-inner">
-                <i class="ph ph-folder-simple explorer-toggle"></i>
-                <nav class="area-nav-header">
-                    <ul class="list-nav-header">
-                        <li>
-                            <i class="ph ph-gear"></i>
-                        </li>
-                    </ul>
-                </nav>
-                <a href="/" class="options">
-                    <img src="{% static 'images/icon.png' %}"
-                         alt="icon"
-                         height="36px"
-                         width="36px">
-                </a>
+        <div class="main">
+            <div id="header">
+                <div class="header-inner">
+                    <i class="ph ph-folder-simple explorer-toggle"></i>
+                    <nav class="area-nav-header">
+                        <ul class="list-nav-header">
+                            <li>
+                                <i class="ph ph-gear"></i>
+                            </li>
+                        </ul>
+                    </nav>
+                    <a href="/" class="options">
+                        <img src="{% static 'images/icon.png' %}"
+                             alt="icon"
+                             height="36px"
+                             width="36px">
+                    </a>
+                </div>
             </div>
-        </div>
-        <div id="markdown">
-            {% block markdown %}
-            {% endblock markdown %}
-        </div>
-    </div>
-</div>
-<div class="ModalMenus">
-    <div class="ModalMenu FileRenameModalMenu">
-        <div class="ModalMenu-content">
-            <div class="ModalMenu-body">
-                <form method="post" autocomplete="off">
-                    <label for="FileRenameModalMenu-name">Rename for:</label>
-                    <input type="text"
-                           name="name"
-                           id="FileRenameModalMenu-name"
-                           value=""
-                           spellcheck="off"
-                           required>
-                    <input type="hidden" name="id" id="FileRenameModalMenu-id" required>
-                </form>
+            <div id="markdown"
+                 style="display:{{ is_explorer|yesno:'none,flex,flex' }}">
+                <textarea id="content" spellcheck="false">{{content}}</textarea>
+                <section class="markdown-body">
+                    {{ preview|safe }}
+                </section>
             </div>
         </div>
     </div>
-</div>
-<div class="ContextMenus">
-    <div class="ContextMenu FileContextMenu">
-        <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem ContextMenuItem--filePublish">
-                <i class="ContextMenuItem-icon ph ph-users"></i>
-                <span class="ContextMenuItem-name">Manage Publish</span>
-            </li>
-        </ul>
-        <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem ContextMenuItem--addBookmark">
-                <i class="ContextMenuItem-icon ph ph-star"></i>
-                <span class="ContextMenuItem-name">Add to bookmark</span>
-            </li>
-            <li class="ContextMenuItem ContextMenuItem--fileCopy">
-                <i class="ContextMenuItem-icon ph ph-files"></i>
-                <span class="ContextMenuItem-name">Make a copy</span>
-            </li>
-            <li class="ContextMenuItem ContextMenuItem--fileRename">
-                <i class="ContextMenuItem-icon ph ph-pencil"></i>
-                <span class="ContextMenuItem-name">Rename</span>
-            </li>
-            <li class="ContextMenuItem ContextMenuItem--fileDelete">
-                <i class="ContextMenuItem-icon ph ph-eraser"></i>
-                <span class="ContextMenuItem-name">Delete</span>
-            </li>
-        </ul>
+    <div class="ContextMenus">
+        <div class="ContextMenu FileContextMenu">
+            <span class="fileId invisible"></span>
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--filePublish">
+                    <i class="ContextMenuItem-icon ph ph-users"></i>
+                    <span class="ContextMenuItem-name">Manage Publish</span>
+                </li>
+            </ul>
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--fileCopy">
+                    <i class="ContextMenuItem-icon ph ph-files"></i>
+                    <span class="ContextMenuItem-name">Make a copy</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--fileRename">
+                    <i class="ContextMenuItem-icon ph ph-pencil"></i>
+                    <span class="ContextMenuItem-name">Rename</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--fileDelete">
+                    <i class="ContextMenuItem-icon ph ph-eraser"></i>
+                    <span class="ContextMenuItem-name">Delete</span>
+                </li>
+            </ul>
+        </div>
+        <div class="ContextMenu FolderContextMenu">
+            <span class="folderId invisible"></span>
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--newFile">
+                    <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
+                    <span class="ContextMenuItem-name">New file</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--newFolder">
+                    <i class="ContextMenuItem-icon ph ph-file-plus"></i>
+                    <span class="ContextMenuItem-name">New folder</span>
+                </li>
+            </ul>
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--folderRename">
+                    <i class="ContextMenuItem-icon ph ph-pencil"></i>
+                    <span class="ContextMenuItem-name">Rename</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--folderDelete">
+                    <i class="ContextMenuItem-icon ph ph-eraser"></i>
+                    <span class="ContextMenuItem-name">Delete</span>
+                </li>
+            </ul>
+        </div>
+        <div class="ContextMenu ExplorerBodyContextMenu">
+            <ul class="ContextMenuGroup">
+                <li class="ContextMenuItem ContextMenuItem--explorerNewFile">
+                    <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
+                    <span class="ContextMenuItem-name">New file</span>
+                </li>
+                <li class="ContextMenuItem ContextMenuItem--explorerNewFolder">
+                    <i class="ContextMenuItem-icon ph ph-file-plus"></i>
+                    <span class="ContextMenuItem-name">New folder</span>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div class="ContextMenu FolderContextMenu">
-        <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem ContextMenuItem--newFile">
-                <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
-                <span class="ContextMenuItem-name">New file</span>
-            </li>
-            <li class="ContextMenuItem ContextMenuItem--newFolder">
-                <i class="ContextMenuItem-icon ph ph-file-plus"></i>
-                <span class="ContextMenuItem-name">New folder</span>
-            </li>
-        </ul>
-        <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem ContextMenuItem--folderPublish">
-                <i class="ContextMenuItem-icon ph ph-users"></i>
-                <span class="ContextMenuItem-name">Manege Publish</span>
-            </li>
-        </ul>
-        <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem ContextMenuItem--folderRename">
-                <i class="ContextMenuItem-icon ph ph-pencil"></i>
-                <span class="ContextMenuItem-name">Rename</span>
-            </li>
-            <li class="ContextMenuItem ContextMenuItem--folderDelete">
-                <i class="ContextMenuItem-icon ph ph-eraser"></i>
-                <span class="ContextMenuItem-name">Delete</span>
-            </li>
-        </ul>
-    </div>
-    <div class="ContextMenu ExplorerBodyContextMenu">
-        <ul class="ContextMenuGroup">
-            <li class="ContextMenuItem Explorer--NewFile">
-                <i class="ContextMenuItem-icon ph ph-folder-simple-plus"></i>
-                <span class="ContextMenuItem-name">New file</span>
-            </li>
-            <li class="ContextMenuItem Explorer--NewFolder">
-                <i class="ContextMenuItem-icon ph ph-file-plus"></i>
-                <span class="ContextMenuItem-name">New folder</span>
-            </li>
-        </ul>
-    </div>
-</div>
-<script src="{% static 'js/markdowns/markdowns.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script src="{% static 'js/markdowns/markdowns.js' %}"></script>
 {% endblock content %}

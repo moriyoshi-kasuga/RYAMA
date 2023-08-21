@@ -42,33 +42,22 @@ refrence: https://stackedit.io/app#
 
 ### Explorer
 
-#### Click of Folder
-クリックしたら[**LocalStorage**](https://www.youtube.com/watch?v=uuAdVs7sbAs)に**openFolders**のキーに、  
-**list** で保存して、それで**FolderItem** に**open-folder** みたいな**className** を追加しよう。  
-(これで仮にページをリロードしたりしても保存しておける)
-### Click of File
-クリックしたら **/markdonws/${file.id}** としてそこにurlをチェンジする,  
-そしてファイルの**className** に **active-file** を付与して選択してるよ、というのを見えるようにする。  
-ここでもしかりに、そのファイルがない場合、他人のファイルの場合は **/markdonws** に戻るようにしよう。  
+- create telescope filter file
+- Render Explorer
+- '.open-file' add to class of ActiveFile localStorage Id FileItem
+- input event of '#file' to render makrdonw of '.markdown-body'
+- chagne envet of '#file' to save change of it file id
+- click folderItem to opensFolder localStorage
+
+#### Right Click of Folder
 
 
-これらがuser tokenだったりreactでのlogin,logoutだったりのUser関係の参考記事,  
-(多分ここさえできてしまえば、あとはreactをちょっと勉強するだけだからだいぶ、ラストスパート)  
-https://note.crohaco.net/2018/django-rest-framework-view/  
-https://qiita.com/okoppe8/items/c58bb3faaf26c9e2f27f  
-https://qiita.com/shun198/items/268f6e98dbc11fac1831  
-https://qiita.com/shun198/items/067e122bb291fed2c839  
-https://qiita.com/tomoyukiy/items/a282b2c97ae2bbedac33  
-https://qiita.com/Bashi50/items/8964cc55c596e51fcbbe  
+- show Modal 
+    > hover で 何か色付けよう
+    - Delete
+    - 
 
----
-
-```mermaid
-sequenceDiagram;
-
-participant frontend
-participant backend
-
-frontend ->> backend:fsdaf
-
-```
+markdowns/<int:id> に対して、
+これは普通に/markdownsにredirectして、
+最初からidのファイルが開かれてるよであとは全部ajaxでスムーズにしたほうがなんか気がいいと思う.
+Folder,FileのidをuuidFieldにしよう。
