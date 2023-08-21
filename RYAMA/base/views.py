@@ -1,18 +1,11 @@
 import json
-from http import HTTPStatus
 
 import mistletoe
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponse, JsonResponse
-from django.http.response import (Http404, HttpResponseNotAllowed,
-                                  HttpResponseNotFound)
-from django.shortcuts import get_object_or_404, redirect, render
+from django.http import JsonResponse
+from django.http.response import HttpResponseNotAllowed
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
-from django.views.generic.edit import UpdateView
 
 from .models import File, Folder
 
