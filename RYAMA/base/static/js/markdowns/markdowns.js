@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-undef
+hljs.highlightAll()
+
 function getCookie (name) {
   let cookieValue = null
   if (document.cookie && document.cookie !== '') {
