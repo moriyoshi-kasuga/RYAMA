@@ -208,28 +208,18 @@ body {
   display: none;
 }
 
+.pane-item-input ,
 .pane-item-title {
   display: inline;
   font-size: 15px;
   word-wrap: break-word;
 }
 
-
-.pane-item-input {
-  background: #343434;
-  user-select: text;
-  border: 1px solid #666666;
-  outline: 0;
-  padding: 0 10px 0 2px;
-  cursor: text;
-  overflow: hidden;
-}
-
-:is(.FolderItem, .FileItem) > .pane-item-header .pane-item-rename {
+:is(.FolderItem, .FileItem) > .pane-item-header #RenameInput {
   display: none;
 }
 
-:is(.FolderItem, .FileItem).rename-item > .pane-item-header .pane-item-rename {
+:is(.FolderItem, .FileItem).rename-item > .pane-item-header #RenameInput {
   display: inline;
 }
 
