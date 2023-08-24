@@ -1,5 +1,18 @@
 {% extends 'homes/base-home.html' %}
 {% block heads %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/homes/home.css' %}">
 {% endblock heads %}
 {% block main %}
+    <div class="Hero">
+        <div class="HeroInner">
+            <div class="HeroTitle"></div>
+            <div class="HeroSubTitle"></div>
+            <div class="HeroLinks">
+                <a href="{% url 'markdowns' %}" class="toSignup">アカウントを作成する</a>
+                <a href="{% url 'features' %}" class="toFeatures">使い方</a>
+            </div>
+        </div>
+        <div class="HeroScrennshot"></div>
+    </div>
 {% endblock main %}
