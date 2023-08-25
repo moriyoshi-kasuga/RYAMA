@@ -8,24 +8,24 @@
         <form method="post" id="form">
             {% csrf_token %}
             <div class="user-box">
-                {{ form.username }}
+                <input type="text" name="username" required value="{{ username }}">
                 <label>Username</label>
             </div>
             <div class="user-box">
-                {{ form.password }}
+                <input type="password" name="password" required>
                 <label>Password</label>
             </div>
             <center>
-                <div class="error"></div>
+                <div class="error">{{ error }}</div>
             </center>
             <center>
                 <a id="send">
-                    SEND
+                    Login
                     <span></span>
                 </a>
             </center>
         </form>
-        <a href="{% url 'signup' %}" class="signup">SignUp</a>
+        <a href="{% url 'signup' %}" class="signup">Signup</a>
     </div>
     <script src="{% static 'js/homes/login.js' %}"></script>
 {% endblock main %}

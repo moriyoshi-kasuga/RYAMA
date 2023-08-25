@@ -36,24 +36,46 @@ def page_features(request):
     return render(request, "homes/features.html")
 
 
-class Login(LoginView):
-    template_name = "homes/login.html"
+# TODO: 時間余ったらこれもjsでfetch使ってloginして
+# return JsonResponse({"status":True, message:"User Logined"})
+# これで/markdowns/にredirectすればわざわざリロードする演出のないログインページができる
+def page_login(request):
+    context = {}
+    if request.method == "POST":
+        username = request.POST["username"]
+        if username:
+            context["username"] = username
+            password = request.POST["password"]
+            if password:
+                user = authenticate(username=username, password=password)
+                if user:
+                    login(request, user)
+                    return redirect("markdowns")
+                else:
+                    context["error"] = "It Account Not Existis"
+            else:
+                context["error"] = "Input Password"
+        else:
+            context["error"] = "Input Username"
+
+    return render(request, "homes/login.html", context)
 
 
 def page_signup(request):
+    context = {}
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get("username")
-            raw_password = form.cleaned_data.get("password1")
-            user = authenticate(username=username, password=raw_password)
+            user = form.save(commit=False)
+            user.save()
             login(request, user)
             return redirect("markdowns")
-        return form.error_messages
+        else:
+            context["error"] = "An error occured during registration"
     else:
         form = UserCreationForm()
-    return render(request, "homes/signup.html", {"form": form})
+    context["form"] = form
+    return render(request, "homes/signup.html", context)
 
 
 # NOTE: Markdowns
