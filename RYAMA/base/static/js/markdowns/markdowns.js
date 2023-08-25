@@ -58,6 +58,7 @@ class Ajax {
 
   setStatusNo (no) {
     this.statusNo = no
+    return this
   }
 
   setError (error) {

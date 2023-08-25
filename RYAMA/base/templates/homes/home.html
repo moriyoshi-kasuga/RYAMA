@@ -6,13 +6,16 @@
 {% block main %}
     <div class="Hero">
         <div class="HeroInner">
-            <div class="HeroTitle"></div>
-            <div class="HeroSubTitle"></div>
+            <div class="HeroTitle">RYAMA</div>
+            <div class="HeroSubTitle">Rainbow Yonder Adorn Markdown Application</div>
             <div class="HeroLinks">
                 <a href="{% url 'markdowns' %}" class="toSignup">アカウントを作成する</a>
                 <a href="{% url 'features' %}" class="toFeatures">使い方</a>
             </div>
         </div>
-        <div class="HeroScrennshot"></div>
+        <img src="{% static 'images/HomeScreenShot.png' %}"
+             alt="Demo ScreenShot"
+             height="auto"
+             width="500">
     </div>
 {% endblock main %}
