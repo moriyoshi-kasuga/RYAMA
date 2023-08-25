@@ -1,4 +1,4 @@
-function isNotNone (object, process) {
+function isNotNone(object, process) {
   if (object) {
     if (process) {
       process(object)
@@ -9,7 +9,7 @@ function isNotNone (object, process) {
 }
 
 class Ajax {
-  constructor (url, method = 'GET') {
+  constructor(url, method = 'GET') {
     this.url = url
     this.method = method
     this.headers = {
@@ -31,42 +31,42 @@ class Ajax {
     this.finally = null
   }
 
-  addHeaers (properties) {
+  addHeaers(properties) {
     Object.assign(this.headers, properties)
     return this
   }
 
-  setBody (body) {
+  setBody(body) {
     this.body = body
     return this
   }
 
-  setSerializer (serializer) {
+  setSerializer(serializer) {
     this.serializer = serializer
     return this
   }
 
-  setSuccess (success) {
+  setSuccess(success) {
     this.success = success
     return this
   }
 
-  setStatusOk (ok) {
+  setStatusOk(ok) {
     this.statusOk = ok
     return this
   }
 
-  setStatusNo (no) {
+  setStatusNo(no) {
     this.statusNo = no
     return this
   }
 
-  setError (error) {
+  setError(error) {
     this.error = error
     return this
   }
 
-  run () {
+  async run() {
     const property = {
       method: this.method,
       headers: this.headers
@@ -74,7 +74,7 @@ class Ajax {
     if (this.body !== null) {
       Object.assign(property, { body: JSON.stringify(this.body) })
     }
-    fetch(this.url, property)
+    await fetch(this.url, property)
       .then((response) => this.serializer(response))
       .then((data) => {
         if (this.success) {
@@ -96,7 +96,7 @@ class Ajax {
   }
 }
 
-function getCookie (name) {
+function getCookie(name) {
   let cookieValue = null
   if (document.cookie && document.cookie !== '') {
     const cookies = document.cookie.split(';')
@@ -113,7 +113,7 @@ function getCookie (name) {
 
 const $explorerBody = document.getElementById('ExplorerBody')
 
-function loadExplorer (success = null) {
+function loadExplorer(success = null) {
   new Ajax('/api/explorer/')
     .setSerializer((response) => response.text())
     .setSuccess((data) => {
@@ -126,19 +126,19 @@ function loadExplorer (success = null) {
     .run()
 }
 
-function setActiveFile (id) {
+function setActiveFile(id) {
   localStorage.setItem('activeItem', id)
 }
 
-function removeActiveFile (id) {
+function removeActiveFile(id) {
   localStorage.removeItem('activeItem')
 }
 
-function getActiveFile () {
+function getActiveFile() {
   return localStorage.getItem('activeItem')
 }
 
-function checkActiveExisits () {
+function checkActiveExisits() {
   if (getFileOfId(getActiveFile()) === null) {
     removeActiveFile()
     document.getElementById('markdown').style = 'display:none'
@@ -147,16 +147,17 @@ function checkActiveExisits () {
 }
 
 const $markdownBody = document.querySelector('.markdown-body')
-
-async function syncPreview (content) {
-  // eslint-disable-next-line no-undef
-  $markdownBody.innerHTML = marked.parse(content)
-  // eslint-disable-next-line no-undef
-  hljs.highlightAll()
-  // TODO: https://marked.js.org/using_pro#renderer これをみて色とかのcss変更だったりして虹のように飾れるようにしよう
-}
-
 const $content = document.getElementById('content')
+
+async function syncPreview(content) {
+  new Ajax('/api/markdown/', 'POST')
+    .setBody({ content: $content.value })
+    .setSerializer((response) => response.text())
+    .setSuccess((data) => {
+      $markdownBody.innerHTML = data
+    })
+    .run()
+}
 
 $content.addEventListener('change', (event) => {
   const $file = event.currentTarget
@@ -199,7 +200,7 @@ $content.addEventListener('scroll', () => {
   $markdownBody.scrollTop = markdownBody * fileParseint
 })
 
-function setOpens (ids) {
+function setOpens(ids) {
   localStorage.setItem('openFolders', JSON.stringify({ ids }))
 }
 
@@ -207,22 +208,22 @@ if (localStorage.getItem('openFolders') === null) {
   setOpens([])
 }
 
-function getOpens () {
+function getOpens() {
   return JSON.parse(localStorage.getItem('openFolders')).ids
 }
 
-function containOpen (id) {
+function containOpen(id) {
   return getOpens().includes(id)
 }
 
-function addOpen (id) {
+function addOpen(id) {
   if (containOpen(id)) {
     return
   }
   setOpens([...getOpens(), id])
 }
 
-function removeOpen (id) {
+function removeOpen(id) {
   if (!containOpen(id)) {
     return
   }
@@ -280,7 +281,7 @@ $folderContextMenu.querySelector('.ContextMenuItem--folderRename').addEventListe
   setRename(getFolderOfId($folderContextMenuId.textContent))
 })
 
-function showContextMenu (contextMenu, x, y) {
+function showContextMenu(contextMenu, x, y) {
   resetContextMenu()
   enableContextMenu = contextMenu
   contextMenu.style.display = 'block'
@@ -331,31 +332,31 @@ document.querySelectorAll('.explorer-open').forEach(($open) => {
   })
 })
 
-function isFile (element) {
+function isFile(element) {
   return element.id.startsWith('File-')
 }
 
-function isFolder (element) {
+function isFolder(element) {
   return element.id.startsWith('Folder-')
 }
 
-function getFileId (fileElement) {
+function getFileId(fileElement) {
   return fileElement.id.replace('File-', '')
 }
 
-function getFolderId (folderElement) {
+function getFolderId(folderElement) {
   return folderElement.id.replace('Folder-', '')
 }
 
-function getFileOfId (id) {
+function getFileOfId(id) {
   return document.getElementById(`File-${id}`)
 }
 
-function getFolderOfId (id) {
+function getFolderOfId(id) {
   return document.getElementById(`Folder-${id}`)
 }
 
-function folderCreateOfExplorer () {
+function folderCreateOfExplorer() {
   new Ajax('/api/explorer/folder/', 'POST')
     .setStatusOk((data) => {
       $explorerBody.insertAdjacentHTML('afterbegin', data.successHTML)
@@ -365,7 +366,7 @@ function folderCreateOfExplorer () {
     .run()
 }
 
-function fileCreateOfExplorer () {
+function fileCreateOfExplorer() {
   new Ajax('/api/explorer/file/', 'POST')
     .setStatusOk((data) => {
       $explorerBody.insertAdjacentHTML('afterbegin', data.successHTML)
@@ -376,7 +377,7 @@ function fileCreateOfExplorer () {
     .run()
 }
 
-function folderReload (id) {
+function folderReload(id) {
   const $folder = getFolderOfId(id)
   if ($folder.querySelector('.pane-item-children').children.length === 0) {
     removeOpen(id)
@@ -389,14 +390,14 @@ function folderReload (id) {
   }
 }
 
-function folderReloadElement ($item) {
+function folderReloadElement($item) {
   const id = $item.id
   if (id.includes('Folder-')) {
     folderReload(id.replace('Folder-', ''))
   }
 }
 
-function folderCreate (parentFolderId) {
+function folderCreate(parentFolderId) {
   new Ajax('/api/folder/', 'POST')
     .setBody({ id: parentFolderId })
     .setStatusOk((data) => {
@@ -411,7 +412,7 @@ function folderCreate (parentFolderId) {
 }
 
 let $renameElement = null
-function setRename ($newRename = null) {
+function setRename($newRename = null) {
   if ($renameElement !== null) {
     isNotNone(document.getElementById('RenameInput'), (elem) => elem.remove())
     $renameElement.classList.remove('rename-item')
@@ -451,7 +452,7 @@ function setRename ($newRename = null) {
   $renameElement = $newRename
 }
 
-function folderSet (id) {
+function folderSet(id) {
   const $folderItem = getFolderOfId(id)
   const $folderItemHeader = $folderItem.querySelector('.FolderItem-header')
 
@@ -473,7 +474,7 @@ function folderSet (id) {
   })
 }
 
-function folderDelete (id) {
+function folderDelete(id) {
   new Ajax('/api/folder/', 'DELETE')
     .setBody({ id })
     .setStatusOk((data) => {
@@ -486,7 +487,7 @@ function folderDelete (id) {
     .run()
 }
 
-function fileSelect (id) {
+function fileSelect(id) {
   const $opendFile = $explorerPane.querySelectorAll('.file-open')
   for (const $openFile of $opendFile) {
     $openFile.classList.remove('file-open')
@@ -505,7 +506,7 @@ function fileSelect (id) {
     .run()
 }
 
-function fileSet (id) {
+function fileSet(id) {
   const $fileItem = getFileOfId(id)
   const $fileItemHeader = $fileItem.querySelector('.FileItem-header')
   $fileItemHeader.addEventListener('click', () => {
@@ -521,7 +522,7 @@ function fileSet (id) {
   })
 }
 
-function fileCreate (parentFolderId) {
+function fileCreate(parentFolderId) {
   new Ajax('/api/file/', 'POST')
     .setBody({ id: parentFolderId })
     .setStatusOk((data) => {
@@ -552,7 +553,7 @@ function fileCreate (parentFolderId) {
     .run()
 }
 
-function fileDelete (id) {
+function fileDelete(id) {
   new Ajax('/api/file', 'DELETE')
     .setBody({ id })
     .setStatusOk(() => {

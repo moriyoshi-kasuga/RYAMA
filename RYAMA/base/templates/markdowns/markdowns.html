@@ -3,8 +3,6 @@
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/markdowns/main.css' %}" />
     <link rel="stylesheet" href="{% static 'css/markdowns/markdown.css' %}" />
-    <link rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/tokyo-night-dark.min.css">
 {% endblock head %}
 {% block content %}
     <div id="layout">
@@ -111,8 +109,5 @@
             </ul>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
     <script src="{% static 'js/markdowns/markdowns.js' %}"></script>
 {% endblock content %}

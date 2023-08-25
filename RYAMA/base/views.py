@@ -1,14 +1,13 @@
 import json
 
-import mistletoe
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
-from django.http import JsonResponse
-from django.http.response import HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 
+from .markdown import convert_html
 from .models import File, Folder
 
 
@@ -101,12 +100,12 @@ def page_file(request, id):
         return redirect("markdowns")
     file = filter.first()
     context["content"] = file.content
-    context["preview"] = mistletoe.markdown(file.content)
+    context["preview"] = convert_html(file.content)
     context["active_file"] = id
     return render(request, "markdowns/markdowns.html", context)
 
 
-# NOTE:EMPTY
+# NOTE:API
 
 
 def api_explorer_get(request):
@@ -270,3 +269,10 @@ def api_file_get(request, id):
             {"status": False, "message": "File not found."},
         )
     return JsonResponse({"status": True, "content": file.content})
+
+
+def api_markdown(request):
+    context = json.loads(request.body)
+    match request.method:
+        case "POST":
+            return HttpResponse(convert_html(context["content"]))

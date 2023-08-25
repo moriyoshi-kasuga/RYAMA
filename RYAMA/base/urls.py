@@ -16,7 +16,16 @@ urlpatterns = [
     path("api/file/", views.api_file, name="ApiFile"),
     path("api/file/<uuid:id>", views.api_file_get, name="ApiFileGet"),
     path("api/folder/", views.api_folder, name="ApiFolder"),
-    path("api/explorer/", views.api_explorer_get, name="explorerGet"),
-    path("api/explorer/file/", views.api_explorer_file, name="explorerFile"),
-    path("api/explorer/folder/", views.api_explorer_folder, name="explorerFolder"),
+    path("api/markdown/", views.api_markdown, name="ApiMarkdown"),
+    path("api/explorer/", views.api_explorer_get, name="ApiExplorer"),
+    path(
+        "api/explorer/file/",
+        views.api_explorer_file,
+        name="ApiExplorerFile",
+    ),
+    path(
+        "api/explorer/folder/",
+        views.api_explorer_folder,
+        name="ApiExplorerFolder",
+    ),
 ]
