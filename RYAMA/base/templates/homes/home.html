@@ -4,18 +4,73 @@
     <link rel="stylesheet" href="{% static 'css/homes/home.css' %}">
 {% endblock heads %}
 {% block main %}
-    <div class="Hero">
-        <div class="HeroInner">
-            <div class="HeroTitle">RYAMA</div>
-            <div class="HeroSubTitle">Rainbow Yonder Adorn Markdown Application</div>
-            <div class="HeroLinks">
-                <a href="{% url 'markdowns' %}" class="toSignup">アカウントを作成する</a>
-                <a href="{% url 'features' %}" class="toFeatures">使い方</a>
+    <div class="hero">
+        <div class="hero-inner">
+            <h1 class="hero-title">
+                <span>R</span>ainbow <span>Y</span>onder <span>A</span>dorn
+                <br>
+                <span>M</span>arkdown <span>A</span>pplication
+            </h1>
+            <h2 class="hero-subtitle">どこからでも虹のように飾れるマークダウンアプリ</h2>
+            <div class="hero-links">
+                <a href="{% url 'markdowns' %}" class="to-signup">Sign up for free</a>
+                <div class="shadow">
+                    <a href="{% url 'about' %}" class="to-about shadowlink">About</a>
+                    <a href="{% url 'features' %}" class="to-features shadowlink">Features</a>
+                </div>
             </div>
         </div>
-        <img src="{% static 'images/HomeScreenShot.png' %}"
-             alt="Demo ScreenShot"
-             height="auto"
-             width="500">
+        <div class="hero-outer">
+            <img src="{% static 'images/HomeScreenShot.png' %}"
+                 height="auto"
+                 width="auto"
+                 alt="Demo ScreenShot"
+                 class="hero-screenshot">
+        </div>
+    </div>
+    <div class="content-about">
+        <section class="brain section">
+            <span>あなたの思考はあなたのものです。</span>
+            <p>
+                RYAMAはオンラインに保存するため、
+                <br>
+                どこからでもアクセスでき、
+                <br>
+                どのデバイスからでも同様に編集できます。
+            </p>
+        </section>
+        <section class="anywhwere section">
+            <span>どのデバイスでもどこからでも。</span>
+            <p>
+                例えばとっさにメモをしたい場合や、
+                <br>
+                内容を思い出したい場合も
+                <br>
+                簡単にきれいにできます。
+            </p>
+        </section>
+        <section class="markdown section">
+            <span>Markdown</span>
+            <p>
+                ・軽量
+                <br>
+                ・シンプル
+                <br>
+                ・書きやすい
+                <br>
+                ・見やすい
+                <br>
+                という、とてもメモに最適な書き方です。
+            </p>
+        </section>
+        <div class="logo">
+            <img src="{% static 'images/icon.png' %}"
+                 alt="icon"
+                 class="icon"
+                 width="300px"
+                 height="300px">
+            <span class="title">RYAMA</span>
+            <a href="{% url 'markdowns' %}" class="to-signup">Sign up for free</a>
+        </div>
     </div>
 {% endblock main %}

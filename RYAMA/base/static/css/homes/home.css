@@ -1,0 +1,100 @@
+body {
+  color:#fff;
+  background-color: #101010;
+}
+
+.hero {
+  display: flex;
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  overflow-y: hidden;
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  width: 45vw;
+  padding-top: 40px;
+  text-align: center;
+}
+
+.hero-outer {
+ flex-grow: 1; 
+}
+
+.hero-title {
+  margin-bottom: 0;
+  font-size: 3.2rem;
+  font-weight: 300;
+}
+
+.hero-title > span {
+  color: #3a777b;
+  text-decoration: bold;
+}
+
+.hero-subtitle {
+  color: gray;
+}
+
+.to-signup {
+  display: inline-block;
+  width: 250px;
+  height: 50px;
+  padding: 0;
+  margin: 0 5px;
+  font: 20px/49px 'Noto Sans JP', sans-serif;
+  color: #fdfdfd;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  background-color: #008aff;
+  border-color: #008aff;
+  border-radius: 4px;
+  outline: none;
+}
+
+.shadow {
+  margin-top: 10px;
+}
+
+.shadowlink {
+  margin: 0 10px;
+  color: #999;
+  text-decoration: none;
+  border-bottom: 1px solid rgb(0 138 255 / 40%);
+}
+
+.hero-screenshot {
+  float: right;
+  width: 40vw;
+  border-top: 1px solid #3a777b;
+  border-left: 1px solid #3a777b;
+}
+
+.content-about {
+  width: 100%;
+  height: auto;
+  padding: 10rem;
+}
+
+.about {
+  font-size: 3rem;
+  color: #3a777b;
+  text-align: center;
+}
+
+.section {
+  margin: 2rem;
+  font-size: 1.5rem;
+}
+
+.section span {
+  font-weight: 500;
+}
+
+.section p {
+  margin-top: 0.2rem;
+  color: gray;
+}
