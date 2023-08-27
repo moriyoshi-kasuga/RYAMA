@@ -130,7 +130,7 @@ function setActiveFile(id) {
   localStorage.setItem('activeItem', id)
 }
 
-function removeActiveFile(id) {
+function removeActiveFile() {
   localStorage.removeItem('activeItem')
 }
 
@@ -151,7 +151,7 @@ const $content = document.getElementById('content')
 
 async function syncPreview(content) {
   new Ajax('/api/markdown/', 'POST')
-    .setBody({ content: $content.value })
+    .setBody({ content })
     .setSerializer((response) => response.text())
     .setSuccess((data) => {
       $markdownBody.innerHTML = data
@@ -184,10 +184,10 @@ $content.onkeydown = (e) => {
 
 if (window.location.pathname === '/markdowns/' && getActiveFile() !== null) {
   new Ajax(`/api/file/${getActiveFile()}`)
-    .setStatusOk((data) => {
+    .setStatusOk(() => {
       window.location.pathname = ('/markdowns/' + getActiveFile())
     })
-    .setStatusNo((data) => {
+    .setStatusNo(() => {
       removeActiveFile()
     })
     .run()
@@ -336,10 +336,6 @@ function isFile(element) {
   return element.id.startsWith('File-')
 }
 
-function isFolder(element) {
-  return element.id.startsWith('Folder-')
-}
-
 function getFileId(fileElement) {
   return fileElement.id.replace('File-', '')
 }
@@ -477,7 +473,7 @@ function folderSet(id) {
 function folderDelete(id) {
   new Ajax('/api/folder/', 'DELETE')
     .setBody({ id })
-    .setStatusOk((data) => {
+    .setStatusOk(() => {
       const $folder = getFolderOfId(id)
       const $parent = $folder.parentElement.parentElement
       $folder.remove()
