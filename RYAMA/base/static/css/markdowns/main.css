@@ -10,8 +10,8 @@ body {
 }
 
 .main {
-  width: 100vh;
   display: flex;
+  width: 100vw;
   flex-grow: 1;
   flex-direction: column;
   position: relative;
