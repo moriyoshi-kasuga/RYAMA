@@ -25,6 +25,7 @@ body {
 
 .hero-title {
   margin-bottom: 0;
+  font-family: 'Noto SerifJP',serif;
   font-size: 3.2rem;
   font-weight: 300;
 }
@@ -42,8 +43,6 @@ body {
   display: inline-block;
   width: 250px;
   height: 50px;
-  padding: 0;
-  margin: 0 5px;
   font: 20px/49px 'Noto Sans JP', sans-serif;
   color: #fdfdfd;
   text-align: center;
@@ -53,6 +52,11 @@ body {
   border-color: #008aff;
   border-radius: 4px;
   outline: none;
+  transition: all 0.3s;
+}
+
+.to-signup:hover {
+  transform: scale(1.02);
 }
 
 .shadow {
@@ -74,6 +78,8 @@ body {
 }
 
 .content-about {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
   height: auto;
   padding: 10rem;
@@ -84,6 +90,7 @@ body {
   color: #3a777b;
   text-align: center;
 }
+
 
 .section {
   margin: 2rem;
@@ -97,4 +104,21 @@ body {
 .section p {
   margin-top: 0.2rem;
   color: gray;
+}
+
+main .logo {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  text-align: center;
+}
+
+.title {
+  font-family: 'Noto SerifJP',serif;
+  font-size: 3rem;
+  text-align: center;
+}
+
+.logo .to-signup {
+  margin: 0.1rem auto;
 }
