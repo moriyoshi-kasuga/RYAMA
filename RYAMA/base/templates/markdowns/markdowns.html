@@ -109,14 +109,21 @@
             </ul>
         </div>
     </div>
-    <div class="ModalMenu" id="Publish">
-        <div class="ModalInner">
-            <div class="ModalHeader">
-                <span>Publish</span>
-                <h3 id="PublishName"></h3>
+    <div class="ModalWindow" id="Publish">
+        <span class="fileId invisible"></span>
+        <div class="ModalMenu">
+            <i id="PublishClose" class="ph ph-x"></i>
+            <div class="ModalInner">
+                <h1 class="ModalTitle">
+                    Publish &nbsp; "<span id="PublishName"></span>"
+                </h1>
+                <div class="ModalDescription">
+                    <div id="PublishSwitchOuter">
+                        <div id="PublishSwitchToggle"></div>
+                    </div>
+                </div>
+                <div class="ModalContext"></div>
             </div>
-            <div class="ModalDescription"></div>
-            <div class="ModalContext"></div>
         </div>
     </div>
     <script src="{% static 'js/markdowns/markdowns.js' %}"></script>

@@ -8,7 +8,6 @@ function isNotNone(object, process) {
   return false
 }
 
-
 class Ajax {
   constructor(url, method = 'GET') {
     this.url = url
@@ -82,7 +81,9 @@ class Ajax {
           this.success(data)
           return
         }
-        isNotNone(data.status ? this.statusOk : this.statusNo, (func) => func(data))
+        isNotNone(data.status ? this.statusOk : this.statusNo, (func) =>
+          func(data)
+        )
       })
       .catch((error) => {
         if (this.error) {
@@ -103,7 +104,7 @@ function getCookie(name) {
     const cookies = document.cookie.split(';')
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim()
-      if (cookie.substring(0, name.length + 1) === (`${name}=`)) {
+      if (cookie.substring(0, name.length + 1) === `${name}=`) {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
         break
       }
@@ -163,9 +164,7 @@ async function syncPreview(content) {
 $content.addEventListener('change', (event) => {
   const $file = event.currentTarget
   const data = { id: getActiveFile(), body: $file.value, option: 'content' }
-  new Ajax('/api/file/', 'PUT')
-    .setBody(data)
-    .run()
+  new Ajax('/api/file/', 'PUT').setBody(data).run()
 })
 
 $content.addEventListener('input', (event) => {
@@ -173,7 +172,9 @@ $content.addEventListener('input', (event) => {
 })
 
 $content.onkeydown = (e) => {
-  if (e.code !== 'Tab') { return }
+  if (e.code !== 'Tab') {
+    return
+  }
   e.preventDefault()
   const newPos = $content.selectionStart + 1
   const value = $content.value
@@ -186,7 +187,7 @@ $content.onkeydown = (e) => {
 if (window.location.pathname === '/markdowns/' && getActiveFile() !== null) {
   new Ajax(`/api/file/${getActiveFile()}`)
     .setStatusOk(() => {
-      window.location.pathname = ('/markdowns/' + getActiveFile())
+      window.location.pathname = '/markdowns/' + getActiveFile()
     })
     .setStatusNo(() => {
       removeActiveFile()
@@ -228,7 +229,7 @@ function removeOpen(id) {
   if (!containOpen(id)) {
     return
   }
-  setOpens(getOpens().filter(i => i !== id))
+  setOpens(getOpens().filter((i) => i !== id))
 }
 
 // BLOCK: ContextMenus
@@ -241,46 +242,70 @@ const resetContextMenu = () => {
   }
 }
 
-const $explorerContextMenu = $contextMenus.querySelector('.ExplorerBodyContextMenu')
+const $explorerContextMenu = $contextMenus.querySelector(
+  '.ExplorerBodyContextMenu'
+)
 
-$explorerContextMenu.querySelector('.ContextMenuItem--explorerNewFile').addEventListener('click', () => {
-  fileCreateOfExplorer()
-})
+$explorerContextMenu
+  .querySelector('.ContextMenuItem--explorerNewFile')
+  .addEventListener('click', () => {
+    fileCreateOfExplorer()
+  })
 
-$explorerContextMenu.querySelector('.ContextMenuItem--explorerNewFolder').addEventListener('click', () => {
-  folderCreateOfExplorer()
-})
+$explorerContextMenu
+  .querySelector('.ContextMenuItem--explorerNewFolder')
+  .addEventListener('click', () => {
+    folderCreateOfExplorer()
+  })
 
 const $fileContextMenu = $contextMenus.querySelector('.FileContextMenu')
 const $fileContextMenuId = $fileContextMenu.querySelector('.fileId')
 
-$fileContextMenu.querySelector('.ContextMenuItem--fileDelete').addEventListener('click', () => {
-  fileDelete($fileContextMenuId.textContent)
-})
+$fileContextMenu
+  .querySelector('.ContextMenuItem--fileDelete')
+  .addEventListener('click', () => {
+    fileDelete($fileContextMenuId.textContent)
+  })
 
-$fileContextMenu.querySelector('.ContextMenuItem--fileRename').addEventListener('click', () => {
-  setRename(getFileOfId($fileContextMenuId.textContent))
-})
+$fileContextMenu
+  .querySelector('.ContextMenuItem--filePublish')
+  .addEventListener('click', () => {
+    filePublish($fileContextMenuId.textContent)
+  })
+
+$fileContextMenu
+  .querySelector('.ContextMenuItem--fileRename')
+  .addEventListener('click', () => {
+    setRename(getFileOfId($fileContextMenuId.textContent))
+  })
 
 const $folderContextMenu = $contextMenus.querySelector('.FolderContextMenu')
 
 const $folderContextMenuId = $folderContextMenu.querySelector('.folderId')
 
-$folderContextMenu.querySelector('.ContextMenuItem--newFile').addEventListener('click', () => {
-  fileCreate($folderContextMenuId.textContent)
-})
+$folderContextMenu
+  .querySelector('.ContextMenuItem--newFile')
+  .addEventListener('click', () => {
+    fileCreate($folderContextMenuId.textContent)
+  })
 
-$folderContextMenu.querySelector('.ContextMenuItem--newFolder').addEventListener('click', () => {
-  folderCreate($folderContextMenuId.textContent)
-})
+$folderContextMenu
+  .querySelector('.ContextMenuItem--newFolder')
+  .addEventListener('click', () => {
+    folderCreate($folderContextMenuId.textContent)
+  })
 
-$folderContextMenu.querySelector('.ContextMenuItem--folderDelete').addEventListener('click', () => {
-  folderDelete($folderContextMenuId.textContent)
-})
+$folderContextMenu
+  .querySelector('.ContextMenuItem--folderDelete')
+  .addEventListener('click', () => {
+    folderDelete($folderContextMenuId.textContent)
+  })
 
-$folderContextMenu.querySelector('.ContextMenuItem--folderRename').addEventListener('click', () => {
-  setRename(getFolderOfId($folderContextMenuId.textContent))
-})
+$folderContextMenu
+  .querySelector('.ContextMenuItem--folderRename')
+  .addEventListener('click', () => {
+    setRename(getFolderOfId($folderContextMenuId.textContent))
+  })
 
 function showContextMenu(contextMenu, x, y) {
   resetContextMenu()
@@ -366,6 +391,7 @@ function folderCreateOfExplorer() {
 function fileCreateOfExplorer() {
   new Ajax('/api/explorer/file/', 'POST')
     .setStatusOk((data) => {
+      // FIX: ここもフォルダがある場合はそのフォルダのすぐ下に作ろう
       $explorerBody.insertAdjacentHTML('afterbegin', data.successHTML)
       fileSet(data.id)
       fileSelect(data.id)
@@ -400,7 +426,9 @@ function folderCreate(parentFolderId) {
     .setStatusOk((data) => {
       const $folder = getFolderOfId(parentFolderId)
       $folder.classList.add('folder-open')
-      $folder.querySelector('.pane-item-children').insertAdjacentHTML('afterbegin', data.successHTML)
+      $folder
+        .querySelector('.pane-item-children')
+        .insertAdjacentHTML('afterbegin', data.successHTML)
       folderSet(data.id)
       folderReload(parentFolderId)
       setRename(getFolderOfId(data.id))
@@ -420,7 +448,10 @@ function setRename($newRename = null) {
   }
   $newRename.classList.add('rename-item')
   const $header = $newRename.querySelector('.pane-item-header')
-  $header.insertAdjacentHTML('beforeend', '<input id="RenameInput" class="pane-item-input" spellcheck="false">')
+  $header.insertAdjacentHTML(
+    'beforeend',
+    '<input id="RenameInput" class="pane-item-input" spellcheck="false">'
+  )
   const $input = document.getElementById('RenameInput')
   const $title = $newRename.querySelector('.pane-item-title')
   const itFile = isFile($newRename)
@@ -443,9 +474,13 @@ function setRename($newRename = null) {
         .run()
     }
   })
-  $input.addEventListener('blur', () => {
-    setRename()
-  }, { signal: controller.signal })
+  $input.addEventListener(
+    'blur',
+    () => {
+      setRename()
+    },
+    { signal: controller.signal }
+  )
   $renameElement = $newRename
 }
 
@@ -530,6 +565,7 @@ function fileCreate(parentFolderId) {
       $folder.classList.add('folder-open')
       const $children = $folder.querySelector('.pane-item-children')
       const $childrens = $children.children
+      // FIX: ここで中身がない場合とファイルがある場合は中に作られるが、フォルダのみ,あると親フォルダの外に作られる。
       if ($childrens.length === 0) {
         $children.insertAdjacentHTML('afterbegin', data.successHTML)
       } else {
@@ -566,6 +602,47 @@ function fileDelete(id) {
     .run()
 }
 
+const $managePublish = document.getElementById('Publish')
+
+document.getElementById('PublishClose').addEventListener('click', () => {
+  $managePublish.classList.remove('open')
+  switchOuter.classList.remove('active')
+})
+
+$managePublish.addEventListener('click', (e) => {
+  if (e.target === $managePublish) {
+    $managePublish.classList.remove('open')
+    switchOuter.classList.remove('active')
+  }
+})
+
+const switchOuter = document.getElementById('PublishSwitchOuter')
+
+switchOuter.addEventListener('click', () => {
+  const toggle = !switchOuter.classList.contains('active')
+  const id = $managePublish.querySelector('.fileId').textContent
+  new Ajax('/api/file/', 'PUT')
+    .setBody({ id, option: 'is_published', is_published: toggle })
+    .setStatusOk(() => {
+      const $file = getFileOfId(id)
+      $file.classList.toggle('publish-item')
+    })
+    .run()
+  switchOuter.classList.toggle('active')
+})
+
+function filePublish(id) {
+  $managePublish.querySelector('.fileId').textContent = id
+  $managePublish.classList.add('open')
+  new Ajax(`/api/file/${id}?option=is_published`)
+    .setStatusOk((data) => {
+      if (data.is_published) {
+        switchOuter.classList.add('active')
+      }
+    })
+    .run()
+}
+
 loadExplorer(() => {
   for (const id of getOpens()) {
     const $folder = getFolderOfId(id)
@@ -576,7 +653,11 @@ loadExplorer(() => {
     $folder.classList.add('folder-open')
   }
 
-  if (/markdowns\/([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})/.test(window.location.pathname)) {
+  if (
+    /markdowns\/([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})/.test(
+      window.location.pathname
+    )
+  ) {
     setActiveFile(window.location.pathname.replace('/markdowns/', ''))
   }
 

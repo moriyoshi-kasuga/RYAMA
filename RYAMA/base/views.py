@@ -232,8 +232,8 @@ def api_file(request):
                     file.name = name
                     file.save()
                     return JsonResponse({"status": True, "name": name})
-                case "publish":
-                    file.is_published = context["publish"]
+                case "is_published":
+                    file.is_published = bool(context["is_published"])
                     file.save()
                     return JsonResponse({"status": True})
         case "DELETE":
@@ -256,7 +256,12 @@ def api_file_get(request, id):
         return JsonResponse(
             {"status": False, "message": "File not found."},
         )
-    return JsonResponse({"status": True, "content": file.content})
+    option = request.GET.get("option")
+    match option:
+        case "is_published":
+            return JsonResponse({"status": True, "is_published": file.is_published})
+        case "content" | None:
+            return JsonResponse({"status": True, "content": file.content})
 
 
 def api_markdown(request):
