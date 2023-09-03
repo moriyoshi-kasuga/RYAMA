@@ -1,4 +1,4 @@
-<div class="FileItem" id="File-{{ file.id }}">
+<div class="FileItem {{ file.is_published|yesno:'publish-item,,' }}" id="File-{{ file.id }}">
   <div class="FileItem-header pane-item-header">
     <div class="FileItem-toggler pane-item-toggler"></div>
     <i class="FileItem-icon pane-item-icon ph ph-file-text"></i>

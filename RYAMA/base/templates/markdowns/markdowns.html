@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head %}
-    <link rel="stylesheet" href="{% static 'css/markdowns/main.css' %}" />
     <link rel="stylesheet" href="{% static 'css/markdowns/markdown.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/markdowns/main.css' %}" />
 {% endblock head %}
 {% block content %}
     <div id="layout">
@@ -107,6 +107,16 @@
                     <span class="ContextMenuItem-name">New folder</span>
                 </li>
             </ul>
+        </div>
+    </div>
+    <div class="ModalMenu" id="Publish">
+        <div class="ModalInner">
+            <div class="ModalHeader">
+                <span>Publish</span>
+                <h3 id="PublishName"></h3>
+            </div>
+            <div class="ModalDescription"></div>
+            <div class="ModalContext"></div>
         </div>
     </div>
     <script src="{% static 'js/markdowns/markdowns.js' %}"></script>

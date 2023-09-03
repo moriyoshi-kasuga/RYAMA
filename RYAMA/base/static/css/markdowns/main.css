@@ -1,6 +1,6 @@
 body {
   background-color: #181818;
-  color:#9c9d9c;
+  color: #9c9d9c;
 }
 
 #layout {
@@ -15,7 +15,7 @@ body {
   flex-grow: 1;
   flex-direction: column;
   position: relative;
-  flex-shrink:1;
+  flex-shrink: 1;
 }
 
 #markdown {
@@ -34,18 +34,23 @@ body {
   outline: none;
 }
 
+#content,
+.markdown-body {
+  width: 50%;
+}
+
 .markdown-body {
   width: 50%;
   height: calc(100vh - 40px);
   overflow-y: auto;
+  border-top: none;
+  border-bottom: none;
 }
 
 /*BLOCK: HEADEr*/
 #header {
   width: 100%;
   background-color: #1a1a1a;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-  z-index: 2;
 }
 
 #header .header-inner {
@@ -59,9 +64,9 @@ body {
   margin-bottom: 12px;
 }
 
-.header-inner .explorer-toggle:hover{
+.header-inner .explorer-toggle:hover {
   cursor: pointer;
-  background-color: #1C676D;
+  background-color: #1c676d;
   border-radius: 5px;
   transform: scale(110%);
 }
@@ -82,7 +87,6 @@ body {
   font-size: 36px;
 }
 
-
 .list-nav-header > li:not(:first-child) {
   margin-left: 5px;
 }
@@ -97,7 +101,6 @@ body {
   font-size: 18px;
   background-color: #181818;
   border-right: 1px solid #262626;
-  box-shadow: 0 2px 3px 2px rgba(0, 0, 0, 0.8);
 }
 
 .LeftPaneContainer-panes {
@@ -118,7 +121,6 @@ body {
   font-size: 24px;
 }
 
-
 .LeftPaneContainer-panes .Pane-headerToolbar {
   padding: 0 20px;
   position: absolute;
@@ -131,8 +133,8 @@ body {
   vertical-align: -2px;
 }
 
-.LeftPaneContainer-panes .Pane-header i:hover{
-  background-color: #1C676D;
+.LeftPaneContainer-panes .Pane-header i:hover {
+  background-color: #1c676d;
   cursor: pointer;
   border-radius: 5px;
   transform: scale(200%);
@@ -150,9 +152,6 @@ body {
   text-align: center;
 }
 
-
-
-
 .Pane {
   height: 100%;
 }
@@ -163,7 +162,6 @@ body {
   padding: 10px 0;
   overflow: auto;
 }
-
 
 .pane-item-header {
   color: #cacbcb;
@@ -212,7 +210,7 @@ body {
   display: none;
 }
 
-.pane-item-input ,
+.pane-item-input,
 .pane-item-title {
   display: inline;
   font-size: 15px;
@@ -227,7 +225,9 @@ body {
   display: inline;
 }
 
-:is(.FolderItem, .FileItem).rename-item > .pane-item-header :is(.FileItem-title,.FolderItem-title) { 
+:is(.FolderItem, .FileItem).rename-item
+  > .pane-item-header
+  :is(.FileItem-title, .FolderItem-title) {
   display: none;
 }
 
@@ -236,15 +236,14 @@ body {
 }
 
 .FolderItem.parent-item > .pane-item-header .pane-item-toggler:before {
-  content: "\ea00";
+  content: '\ea00';
 }
 
 .FolderItem.parent-item.folder-open
   > .pane-item-header
   .pane-item-toggler:before {
-  content: "\e9fe";
+  content: '\e9fe';
 }
-
 
 .ContextMenu {
   color: #cacaca;
@@ -270,8 +269,8 @@ body {
   padding: 4px 30px 4px 10px;
 }
 
-.ContextMenuItem:hover{
-  background-color: #1C676D;
+.ContextMenuItem:hover {
+  background-color: #1c676d;
 }
 
 .ContextMenuItem-icon {
@@ -301,12 +300,11 @@ input {
 
 .icon {
   font-style: normal;
-  font-family: "Phosphor" !important;
+  font-family: 'Phosphor' !important;
   font-weight: normal;
   font-variant: normal;
   line-height: 1;
 }
-
 
 .invisible {
   display: none;

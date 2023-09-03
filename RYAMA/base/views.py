@@ -20,7 +20,9 @@ def page_publish(request, id):
     try:
         file = File.objects.get(id=id, is_published=True)
         return render(
-            request, "homes/publish.html", {"preview": convert_html(file.content)}
+            request,
+            "publish.html",
+            {"preview": convert_html(file.content), "name": file.name},
         )
     except Exception:
         return redirect("home")
@@ -230,6 +232,10 @@ def api_file(request):
                     file.name = name
                     file.save()
                     return JsonResponse({"status": True, "name": name})
+                case "publish":
+                    file.is_published = context["publish"]
+                    file.save()
+                    return JsonResponse({"status": True})
         case "DELETE":
             file.delete()
             return JsonResponse(
