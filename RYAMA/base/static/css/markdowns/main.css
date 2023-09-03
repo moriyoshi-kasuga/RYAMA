@@ -1,6 +1,6 @@
 body {
   background-color: #181818;
-  color: #18a6b0;
+  color:#9c9d9c;
 }
 
 #layout {
@@ -26,10 +26,7 @@ body {
 #content {
   border: none;
   box-shadow: none;
-  background-color: #181818;
   resize: none;
-  padding: 20px;
-  color: white;
 }
 
 #content:focus {
@@ -46,14 +43,15 @@ body {
 /*BLOCK: HEADEr*/
 #header {
   width: 100%;
-  background-color: #181818;
+  background-color: #1a1a1a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  z-index: 2;
 }
 
 #header .header-inner {
   display: flex;
   align-items: center;
   height: 40px;
-  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.8);
   font-size: 36px;
 }
 
@@ -98,6 +96,8 @@ body {
   width: fit-content;
   font-size: 18px;
   background-color: #181818;
+  border-right: 1px solid #262626;
+  box-shadow: 0 2px 3px 2px rgba(0, 0, 0, 0.8);
 }
 
 .LeftPaneContainer-panes {
@@ -109,12 +109,11 @@ body {
   overflow: hidden;
   max-width: 400px;
   min-width: 205px;
-  box-shadow: 0 1px 0 1px #222222;
 }
 
 .LeftPaneContainer-panes .Pane-header {
   height: 40px;
-  background: #262626;
+  background-color: #1a1a1a;
   position: relative;
   font-size: 24px;
 }
@@ -125,6 +124,11 @@ body {
   position: absolute;
   width: calc(100% - 40px);
   height: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.LeftPaneContainer-panes .Pane-header i {
+  vertical-align: -2px;
 }
 
 .LeftPaneContainer-panes .Pane-header i:hover{
@@ -147,9 +151,6 @@ body {
 }
 
 
-.LeftPaneContainer-panes i {
-  vertical-align: -2px;
-}
 
 
 .Pane {
@@ -165,18 +166,21 @@ body {
 
 
 .pane-item-header {
-  color: #1dc9d6;
+  color: #cacbcb;
   cursor: pointer;
   display: inline-block;
   min-width: 100%;
   white-space: nowrap;
   padding: 2px 2px 2px 23px;
-  background-color: #181818;
 }
 
 .pane-item-header:hover {
-  background-color: #0a474c;
+  background-color: #003766;
   transition: all 0.2s;
+}
+
+.FileItem.publish-item .FileItem-icon {
+  color: #0680f9;
 }
 
 .FileItem.file-open > .pane-item-header {
@@ -243,9 +247,9 @@ body {
 
 
 .ContextMenu {
-  color: #1dc9d6;
+  color: #cacaca;
   background: #181818;
-  border: 1px solid #3a777b;
+  border: 1px solid #444;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   position: fixed;
   z-index: 401;
@@ -271,6 +275,7 @@ body {
 }
 
 .ContextMenuItem-icon {
+  color: #a7a7a7;
   display: inline-block;
   margin: 2px 10px 2px 0;
   position: relative;
