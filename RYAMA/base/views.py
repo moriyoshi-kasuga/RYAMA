@@ -2,7 +2,6 @@ import json
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
@@ -17,27 +16,16 @@ def page_home(request):
     return render(request, "homes/home.html")
 
 
-def page_publish(request):
-    if request.method == "GEt":
-        return render(request, "homes/publish.html")
-    return render(request, "homes/publish.html")
+def page_publish(request, id):
+    try:
+        file = File.objects.get(id=id, is_published=True)
+        return render(
+            request, "homes/publish.html", {"preview": convert_html(file.content)}
+        )
+    except Exception:
+        return redirect("home")
 
 
-def page_about(request):
-    if request.method == "GET":
-        return render(request, "homes/about.html")
-    return render(request, "homes/about.html")
-
-
-def page_features(request):
-    if request.method == "GET":
-        return render(request, "homes/features.html")
-    return render(request, "homes/features.html")
-
-
-# TODO: 時間余ったらこれもjsでfetch使ってloginして
-# return JsonResponse({"status":True, message:"User Logined"})
-# これで/markdowns/にredirectすればわざわざリロードする演出のないログインページができる
 def page_login(request):
     context = {}
     if request.method == "POST":
@@ -77,9 +65,6 @@ def page_signup(request):
     return render(request, "homes/signup.html", context)
 
 
-# NOTE: Markdowns
-
-
 def page_markdowns(request):
     user = request.user
     if not user.is_authenticated:
@@ -103,9 +88,6 @@ def page_file(request, id):
     context["preview"] = convert_html(file.content)
     context["active_file"] = id
     return render(request, "markdowns/markdowns.html", context)
-
-
-# NOTE:API
 
 
 def api_explorer_get(request):

@@ -15,8 +15,8 @@
             <div class="hero-links">
                 <a href="{% url 'markdowns' %}" class="to-signup">Sign up for free</a>
                 <div class="shadow">
-                    <a href="{% url 'about' %}" class="to-about shadowlink">About</a>
-                    <a href="{% url 'features' %}" class="to-features shadowlink">Features</a>
+                    <a href="{% url 'home' %}#about" class="to-about shadowlink">About</a>
+                    <a href="{% url 'home' %}#features" class="to-features shadowlink">Features</a>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
                  class="hero-screenshot">
         </div>
     </div>
-    <div class="content-about">
+    <div id="about">
         <div class="sections">
             <section class="brain section">
                 <span>あなたの思考はあなたのものです。</span>
@@ -75,6 +75,38 @@
                  height="300px">
             <span class="title">RYAMA</span>
             <a href="{% url 'markdowns' %}" class="to-signup">Sign up for free</a>
+        </div>
+    </div>
+    <div id="features">
+        <div class="feature">
+            <span class="feature-title">Explorer</span>
+            <div class="feature-description">
+                ファイルやフォルダなどを見れ、
+                追加したりなどの作業を簡単にできます。
+            </div>
+            <img src="{% static 'images/features/explorer.png' %}"
+                 alt="explorer featreu screenshot"
+                 class="feature-screenshot">
+        </div>
+        <div class="feature">
+            <span class="feature-title">Preview</span>
+            <div class="feature-description">
+                リアルタイムで入力、削除した変更が適用され、
+                すぐにメモを書くことができます。
+            </div>
+            <img src="{% static 'images/features/preview.png' %}"
+                 alt="preview feature screenshot"
+                 class="feature-screenshot">
+        </div>
+        <div class="feature">
+            <span class="feature-title">Publish</span>
+            <div class="feature-description">
+                あなたが書いたものをリンクを教えて、
+                公開することができます。
+            </div>
+            <img src="{% static 'images/features/preview.png' %}"
+                 alt="preview feature screenshot"
+                 class="feature-screenshot">
         </div>
     </div>
 {% endblock main %}

@@ -56,7 +56,8 @@ body {
 }
 
 .to-signup:hover {
-  transform: scale(1.02);
+  border-radius: 8px;
+  transform: scale(1.02)
 }
 
 .shadow {
@@ -77,18 +78,12 @@ body {
   border-left: 1px solid #3a777b;
 }
 
-.content-about {
+#about {
   display: flex;
   justify-content: space-between;
   width: 100%;
   height: auto;
   padding: 10rem;
-}
-
-.about {
-  font-size: 3rem;
-  color: #3a777b;
-  text-align: center;
 }
 
 
@@ -121,4 +116,36 @@ main .logo {
 
 .logo .to-signup {
   margin: 0.1rem auto;
+}
+
+#features {
+  display: flex;
+  width: 100%;
+  padding: 10rem;
+  padding-top: 0;
+}
+
+.feature {
+  position: relative;
+  width: 20vw;
+  height: 50vh;
+  padding: 2rem;
+  margin: 1rem;
+  background-color: #262627;
+  border-radius: 20px;
+}
+
+.feature-title {
+  font-size: 1.5rem;
+}
+
+.feature-description {
+  margin: 1rem 0;
+  color: #a2a3a2;
+}
+
+.feature-screenshot {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
 }
