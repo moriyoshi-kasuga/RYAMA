@@ -21,10 +21,6 @@ class Folder(MPTTModel):
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
     )
 
-    is_published = models.BooleanField(
-        verbose_name=_("publish"), help_text=_("Check Published"), default=False
-    )
-
     is_explorer = models.BooleanField(
         verbose_name=_("explorer"),
         help_text=_("Is Explorer Folder"),

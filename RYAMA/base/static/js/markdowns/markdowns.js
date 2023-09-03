@@ -8,6 +8,7 @@ function isNotNone(object, process) {
   return false
 }
 
+
 class Ajax {
   constructor(url, method = 'GET') {
     this.url = url
@@ -506,6 +507,9 @@ function fileSet(id) {
   const $fileItem = getFileOfId(id)
   const $fileItemHeader = $fileItem.querySelector('.FileItem-header')
   $fileItemHeader.addEventListener('click', () => {
+    if ($fileItem.classList.contains('rename-item')) {
+      return
+    }
     if ($fileItem.classList.contains('file-open')) {
       setRename($fileItem)
       return

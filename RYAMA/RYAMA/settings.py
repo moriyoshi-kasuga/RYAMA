@@ -126,6 +126,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# NOTE: ADD Setings
+# BLOCK: ADD Setings
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "markdowns"
