@@ -1,6 +1,5 @@
 {
   "singleQuote": true,
   "trailingComma": "none",
-  "semi": false,
-  "parser": "javascript"
+  "semi": false
 }
