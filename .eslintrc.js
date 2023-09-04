@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true
   },
-  extends: 'standard',
+  extends: ['eslint:recommended', 'standard', 'prettier'],
   overrides: [
     {
       env: {
@@ -18,7 +18,8 @@ module.exports = {
     }
   ],
   parserOptions: {
-    ecmaVersion: 'latest'
+    ecmaVersion: 'latest',
+    sourceType: 'module'
   },
   rules: {
   }

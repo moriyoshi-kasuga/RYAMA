@@ -20,16 +20,16 @@
             </a>
             <ul class="hnav-list">
                 <li>
-                    <a href="{% url 'publish' %}">公開機能</a>
+                    <a href="{% url 'home' %}#publish">公開機能</a>
                 </li>
                 <li>
-                    <a href="{% url 'about' %}">サイト概要</a>
+                    <a href="{% url 'home' %}#about">サイト概要</a>
                 </li>
                 <li>
-                    <a href="{% url 'features' %}">使い方</a>
+                    <a href="{% url 'home' %}#features">使い方</a>
                 </li>
                 <li>
-                    <a href=" {% url 'markdowns' %} ">飾る</a>
+                    <a href="{% url 'markdowns' %}">飾る</a>
                 </li>
             </ul>
             {% if request.user.is_authenticated %}
@@ -43,4 +43,5 @@
         {% block main %}
         {% endblock main %}
     </main>
+    <!-- TODO: add footer -->
 {% endblock content %}

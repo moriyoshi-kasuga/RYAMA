@@ -1,5 +1,130 @@
 {% extends 'homes/base-home.html' %}
 {% block heads %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/homes/home.css' %}">
 {% endblock heads %}
 {% block main %}
+    <div class="hero">
+        <div class="hero-inner">
+            <h1 class="hero-title">
+                <span>R</span>ainbow <span>Y</span>onder <span>A</span>dorn
+                <br>
+                <span>M</span>arkdown <span>A</span>pplication
+            </h1>
+            <h2 class="hero-subtitle">どこからでも虹のように飾れるマークダウンアプリ</h2>
+            <div class="hero-links">
+                <a href="{% url 'markdowns' %}" class="to-signup">Sign up for free</a>
+                <div class="shadow">
+                    <a href="{% url 'home' %}#about" class="to-about shadowlink">About</a>
+                    <a href="{% url 'home' %}#features" class="to-features shadowlink">Features</a>
+                </div>
+            </div>
+        </div>
+        <div class="hero-outer">
+            <img src="{% static 'images/HomeScreenShot.png' %}"
+                 height="auto"
+                 width="auto"
+                 alt="Demo ScreenShot"
+                 class="hero-screenshot">
+        </div>
+    </div>
+    <div id="about">
+        <div class="sections">
+            <section class="brain section">
+                <span>あなたの思考はあなたのものです。</span>
+                <p>
+                    RYAMAはオンラインに保存するため、
+                    <br>
+                    どこからでもアクセスでき、
+                    <br>
+                    どのデバイスからでも同様に編集できます。
+                </p>
+            </section>
+            <section class="anywhwere section">
+                <span>どのデバイスでもどこからでも。</span>
+                <p>
+                    例えばとっさにメモをしたい場合や、
+                    <br>
+                    内容を思い出したい場合も
+                    <br>
+                    簡単にきれいにできます。
+                </p>
+            </section>
+            <section class="markdown section">
+                <span>Markdown</span>
+                <p>
+                    ・軽量
+                    <br>
+                    ・シンプル
+                    <br>
+                    ・書きやすい
+                    <br>
+                    ・見やすい
+                    <br>
+                    という、とてもメモに最適な書き方です。
+                </p>
+            </section>
+            <section class="leanmore-about">
+            </section>
+        </div>
+        <div class="logo">
+            <img src="{% static 'images/icon.png' %}"
+                 alt="icon"
+                 class="icon"
+                 width="300px"
+                 height="300px">
+            <span class="title">RYAMA</span>
+            <a href="{% url 'markdowns' %}" class="to-signup">Sign up for free</a>
+        </div>
+    </div>
+    <div id="features">
+        <div class="feature">
+            <span class="feature-title">Explorer</span>
+            <div class="feature-description">
+                <ul>
+                    <li>Easy lock file and folder</li>
+                    <li>Create Rename Update Delete</li>
+                </ul>
+            </div>
+            <img src="{% static 'images/features/explorer.png' %}"
+                 alt="explorer featreu screenshot"
+                 class="feature-screenshot">
+        </div>
+        <div class="feature">
+            <span class="feature-title">Preview</span>
+            <div class="feature-description">
+                リアルタイムで入力、削除した変更が適用され、
+                <br>
+                すぐにメモを書くことができます。
+            </div>
+            <img src="{% static 'images/features/preview.png' %}"
+                 alt="preview feature screenshot"
+                 class="feature-screenshot">
+        </div>
+        <div class="feature" style="display:none;">
+            <span class="feature-title">Publish</span>
+            <div class="feature-description">
+                あなたが書いたものをリンクを教えて、
+                公開することができます。
+            </div>
+            <img src="{% static 'images/features/preview.png' %}"
+                 alt="preview feature screenshot"
+                 class="feature-screenshot">
+        </div>
+    </div>
+    <div id="publish">
+        <div class="publish-inner">
+            <span class="publish-slogan">あなたが書いたものを共有したいって？</span>
+            <div class="publish-screenshots">
+                <img src="{% static 'images/Publish-off.png' %}"
+                     height="200"
+                     alt="Publish Off">
+                <i class="ph ph-arrow-right"></i>
+                <img src="{% static 'images/Publish-on.png' %}"
+                     height="200"
+                     alt="Publish On">
+            </div>
+            <div class="publish-message">簡単1Clickで外部に公開することができます。</div>
+        </div>
+    </div>
 {% endblock main %}
