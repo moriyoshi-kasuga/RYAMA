@@ -16,7 +16,7 @@ class Ajax {
       'X-CSRFToken': getCookie('csrftoken'),
       'Content-Type': 'application/json'
     }
-    this.body = null
+    this.body = this.method === 'GET' ? null : {}
     this.serializer = (response) => response.json()
     this.success = null
     this.statusOk = null
@@ -113,6 +113,10 @@ function getCookie(name) {
   return cookieValue
 }
 
+const UrlDomain = window.location.protocol + '//' + window.location.host + '/'
+
+document.getElementById('UrlDomain').textContent = UrlDomain
+
 const $explorerBody = document.getElementById('ExplorerBody')
 
 function loadExplorer(success = null) {
@@ -122,8 +126,8 @@ function loadExplorer(success = null) {
       $explorerBody.innerHTML = data
       isNotNone(success, (func) => func())
     })
-    .setError(() => {
-      console.log('Explorer error of loaded')
+    .setError((error) => {
+      console.log(error)
     })
     .run()
 }
@@ -262,6 +266,12 @@ const $fileContextMenu = $contextMenus.querySelector('.FileContextMenu')
 const $fileContextMenuId = $fileContextMenu.querySelector('.fileId')
 
 $fileContextMenu
+  .querySelector('.ContextMenuItem--fileCopy')
+  .addEventListener('click', () => {
+    fileCopy($fileContextMenuId.textContent)
+  })
+
+$fileContextMenu
   .querySelector('.ContextMenuItem--fileDelete')
   .addEventListener('click', () => {
     fileDelete($fileContextMenuId.textContent)
@@ -362,6 +372,10 @@ function isFile(element) {
   return element.id.startsWith('File-')
 }
 
+function isFolder(element) {
+  return element.id.startsWith('Folder-')
+}
+
 function getFileId(fileElement) {
   return fileElement.id.replace('File-', '')
 }
@@ -378,6 +392,24 @@ function getFolderOfId(id) {
   return document.getElementById(`Folder-${id}`)
 }
 
+function insertFileHtml($rootElement, fileHtml) {
+  let notBreaked = true
+  const $children = $rootElement.children
+  for (let index = 0; index < $children.length; index++) {
+    const $child = $children[index]
+    if (isFolder($child)) {
+      continue
+    }
+    $child.insertAdjacentHTML('beforebegin', fileHtml)
+    notBreaked = false
+    break
+  }
+
+  if (notBreaked) {
+    $rootElement.insertAdjacentHTML('beforeend', fileHtml)
+  }
+}
+
 function folderCreateOfExplorer() {
   new Ajax('/api/explorer/folder/', 'POST')
     .setStatusOk((data) => {
@@ -391,8 +423,7 @@ function folderCreateOfExplorer() {
 function fileCreateOfExplorer() {
   new Ajax('/api/explorer/file/', 'POST')
     .setStatusOk((data) => {
-      // FIX: ここもフォルダがある場合はそのフォルダのすぐ下に作ろう
-      $explorerBody.insertAdjacentHTML('afterbegin', data.successHTML)
+      insertFileHtml($explorerBody, data.successHTML)
       fileSet(data.id)
       fileSelect(data.id)
       setRename(getFileOfId(data.id))
@@ -563,24 +594,10 @@ function fileCreate(parentFolderId) {
     .setStatusOk((data) => {
       const $folder = getFolderOfId(parentFolderId)
       $folder.classList.add('folder-open')
-      const $children = $folder.querySelector('.pane-item-children')
-      const $childrens = $children.children
-      // FIX: ここで中身がない場合とファイルがある場合は中に作られるが、フォルダのみ,あると親フォルダの外に作られる。
-      if ($childrens.length === 0) {
-        $children.insertAdjacentHTML('afterbegin', data.successHTML)
-      } else {
-        let breaked = true
-        for (const $item of $childrens) {
-          if (!$item.classList.contains('FolderItem')) {
-            $item.insertAdjacentHTML('beforebegin', data.successHTML)
-            breaked = false
-            break
-          }
-        }
-        if (breaked) {
-          $folder.insertAdjacentHTML('beforeend', data.successHTML)
-        }
-      }
+      insertFileHtml(
+        $folder.querySelector('.pane-item-children'),
+        data.successHTML
+      )
       fileSet(data.id)
       fileSelect(data.id)
       setRename(getFileOfId(data.id))
@@ -600,6 +617,27 @@ function fileDelete(id) {
       checkActiveExisits()
     })
     .run()
+}
+
+// TODO: add file copy action
+function fileCopy(id) {
+  const $file = getFileOfId(id)
+  const hasParent = $file.parentElement.classList.contains('pane-item-children')
+  if (hasParent) {
+    console.log('has parent')
+  } else {
+    new Ajax('/api/explorer/file/', 'POST')
+      .setBody({
+        name: $file.querySelector('.FileItem-title').textContent + "'s Copy"
+      })
+      .setStatusOk((data) => {
+        $file.insertAdjacentHTML('afterend', data.successHTML)
+        fileSet(data.id)
+        fileSelect(data.id)
+        setRename(getFileOfId(data.id))
+      })
+      .run()
+  }
 }
 
 const $managePublish = document.getElementById('Publish')
@@ -631,14 +669,36 @@ switchOuter.addEventListener('click', () => {
   switchOuter.classList.toggle('active')
 })
 
+const $PublishName = document.getElementById('PublishName')
+const $PublishFileId = document.getElementById('UrlFileId')
+
+const $UrlCopy = document.getElementById('UrlCopy')
+let timerId = 0
+$UrlCopy.addEventListener('click', () => {
+  navigator.clipboard.writeText(
+    UrlDomain + 'publish/' + $PublishFileId.textContent
+  )
+  $UrlCopy.textContent = 'Copied!'
+  clearTimeout(timerId)
+  timerId = setTimeout(() => {
+    $UrlCopy.textContent = 'Copy Link'
+  }, 1200)
+})
+
 function filePublish(id) {
   $managePublish.querySelector('.fileId').textContent = id
+  $PublishFileId.textContent = id
   $managePublish.classList.add('open')
   new Ajax(`/api/file/${id}?option=is_published`)
     .setStatusOk((data) => {
       if (data.is_published) {
         switchOuter.classList.add('active')
       }
+    })
+    .run()
+  new Ajax(`/api/file/${id}?option=name`)
+    .setStatusOk((data) => {
+      $PublishName.textContent = data.name
     })
     .run()
 }

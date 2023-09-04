@@ -127,10 +127,12 @@ def api_explorer_file(request):
     )
     match request.method:
         case "POST":
+            body: dict = json.loads(request.body)
+            name = body.get("name", "Empty")
             file = File.objects.create(
                 user=user,
                 parent=explorer,
-                name="Empty",
+                name=name,
             )
             response = {"status": True, "id": file.id}
             response["successHTML"] = render_to_string(
@@ -260,6 +262,8 @@ def api_file_get(request, id):
     match option:
         case "is_published":
             return JsonResponse({"status": True, "is_published": file.is_published})
+        case "name":
+            return JsonResponse({"status": True, "name": file.name})
         case "content" | None:
             return JsonResponse({"status": True, "content": file.content})
 

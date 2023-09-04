@@ -1,5 +1,5 @@
 body {
-  color:#fff;
+  color: #fff;
   background-color: #101010;
 }
 
@@ -20,12 +20,12 @@ body {
 }
 
 .hero-outer {
- flex-grow: 1; 
+  flex-grow: 1;
 }
 
 .hero-title {
   margin-bottom: 0;
-  font-family: 'Noto SerifJP',serif;
+  font-family: 'Noto SerifJP', serif;
   font-size: 3.2rem;
   font-weight: 300;
 }
@@ -57,7 +57,7 @@ body {
 
 .to-signup:hover {
   border-radius: 8px;
-  transform: scale(1.02)
+  transform: scale(1.02);
 }
 
 .shadow {
@@ -73,7 +73,7 @@ body {
 
 .hero-screenshot {
   float: right;
-  width: 40vw;
+  width: 50vw;
   border-top: 1px solid #3a777b;
   border-left: 1px solid #3a777b;
 }
@@ -85,7 +85,6 @@ body {
   height: auto;
   padding: 10rem;
 }
-
 
 .section {
   margin: 2rem;
@@ -109,7 +108,7 @@ main .logo {
 }
 
 .title {
-  font-family: 'Noto SerifJP',serif;
+  font-family: 'Noto SerifJP', serif;
   font-size: 3rem;
   text-align: center;
 }
@@ -120,19 +119,28 @@ main .logo {
 
 #features {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   padding: 10rem;
   padding-top: 0;
+  justify-content: space-between;
 }
 
 .feature {
   position: relative;
-  width: 20vw;
-  height: 50vh;
+  width: 500px;
+  align-items: center;
+  height: 500px;
   padding: 2rem;
   margin: 1rem;
   background-color: #262627;
   border-radius: 20px;
+}
+
+.feature flex {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .feature-title {
@@ -145,7 +153,29 @@ main .logo {
 }
 
 .feature-screenshot {
-  position: absolute;
-  right: 3px;
-  bottom: 3px;
+  border-radius: 20px;
+  height: 350px;
+}
+
+#publish {
+  width: 100%;
+  height: 75vh;
+}
+
+.publish-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.publish-slogan {
+  font-size: 2rem;
+}
+
+.publish-screenshots {
+  font-size: 100px;
+}
+
+.publish-message {
+  font-size: 50px;
 }

@@ -362,10 +362,38 @@ input {
   font-weight: 500;
 }
 
+.ModalContext {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.PublishLinks {
+  font-size: 14px;
+  display: none;
+}
+
+.PublishLinks > * {
+  color: #cacaca;
+  background-color: #181818;
+  border: 1px solid #444;
+  user-select: none;
+  border-radius: 4px;
+  margin: 0 5px;
+  outline: none;
+  padding: 8px 18px;
+  text-align: center;
+}
+
+#UrlCopy:hover {
+  background-color: #444;
+}
+
 #PublishSwitchOuter {
   width: 120px;
   height: 60px;
   background-color: lightgray;
+  margin: 20px;
   border-radius: 30px;
   position: relative;
   cursor: pointer;
@@ -386,12 +414,14 @@ input {
   bottom: 0;
   left: 5px;
   margin: auto;
-  box-shadow:
-    1px 1px 7px #b7b7b7,
-    -1px -1px 4px #cecece inset;
+  box-shadow: 1px 1px 7px #b7b7b7, -1px -1px 4px #cecece inset;
   transition: left 0.3s ease-in-out;
 }
 
 #PublishSwitchOuter.active > #PublishSwitchToggle {
   left: 65px;
+}
+
+#PublishSwitchOuter.active + .PublishLinks {
+  display: block;
 }
