@@ -619,7 +619,6 @@ function fileDelete(id) {
     .run()
 }
 
-// TODO: add file copy action
 function fileCopy(id) {
   const $file = getFileOfId(id)
   const hasParent = $file.parentElement.classList.contains('pane-item-children')
@@ -631,7 +630,7 @@ function fileCopy(id) {
         name: $file.querySelector('.FileItem-title').textContent + "'s Copy"
       })
       .setStatusOk((data) => {
-        $file.insertAdjacentHTML('afterend', data.successHTML)
+        $file.insertAdjacentHTML('beforebegin', data.successHTML)
         fileSet(data.id)
         fileSelect(data.id)
         setRename(getFileOfId(data.id))
