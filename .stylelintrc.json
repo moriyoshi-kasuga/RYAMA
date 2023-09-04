@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "stylelint-prettier"
+  ],
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-recess-order"
+  ],
+  "rules": {
+    "string-quotes": "single"
+  }
+}

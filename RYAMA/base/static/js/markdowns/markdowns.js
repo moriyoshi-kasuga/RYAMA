@@ -1,11 +1,110 @@
-function getCookie (name) {
+function isNotNone(object, process) {
+  if (object) {
+    if (process) {
+      process(object)
+    }
+    return true
+  }
+  return false
+}
+
+class Ajax {
+  constructor(url, method = 'GET') {
+    this.url = url
+    this.method = method
+    this.headers = {
+      'X-CSRFToken': getCookie('csrftoken'),
+      'Content-Type': 'application/json'
+    }
+    this.body = this.method === 'GET' ? null : {}
+    this.serializer = (response) => response.json()
+    this.success = null
+    this.statusOk = null
+    this.statusNo = (data) => {
+      if (data.message) {
+        console.log(data.message)
+      }
+    }
+    this.error = (error) => {
+      console.log(error)
+    }
+    this.finally = null
+  }
+
+  addHeaers(properties) {
+    Object.assign(this.headers, properties)
+    return this
+  }
+
+  setBody(body) {
+    this.body = body
+    return this
+  }
+
+  setSerializer(serializer) {
+    this.serializer = serializer
+    return this
+  }
+
+  setSuccess(success) {
+    this.success = success
+    return this
+  }
+
+  setStatusOk(ok) {
+    this.statusOk = ok
+    return this
+  }
+
+  setStatusNo(no) {
+    this.statusNo = no
+    return this
+  }
+
+  setError(error) {
+    this.error = error
+    return this
+  }
+
+  async run() {
+    const property = {
+      method: this.method,
+      headers: this.headers
+    }
+    if (this.body !== null) {
+      Object.assign(property, { body: JSON.stringify(this.body) })
+    }
+    await fetch(this.url, property)
+      .then((response) => this.serializer(response))
+      .then((data) => {
+        if (this.success) {
+          this.success(data)
+          return
+        }
+        isNotNone(data.status ? this.statusOk : this.statusNo, (func) =>
+          func(data)
+        )
+      })
+      .catch((error) => {
+        if (this.error) {
+          this.error(error)
+        }
+      })
+      .finally(() => {
+        if (this.finally) {
+          this.finally()
+        }
+      })
+  }
+}
+
+function getCookie(name) {
   let cookieValue = null
   if (document.cookie && document.cookie !== '') {
     const cookies = document.cookie.split(';')
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim()
-      // Does this cookie string begin with the name we want?
-      if (cookie.substring(0, name.length + 1) === (`${name}=`)) {
+      if (cookie.substring(0, name.length + 1) === `${name}=`) {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
         break
       }
@@ -14,73 +113,62 @@ function getCookie (name) {
   return cookieValue
 }
 
-function loadExplorer (success = null) {
-  fetch('/api/explorer/')
-    .then((response) => response.text())
-    .then((data) => {
+const UrlDomain = window.location.protocol + '//' + window.location.host + '/'
+
+document.getElementById('UrlDomain').textContent = UrlDomain
+
+const $explorerBody = document.getElementById('ExplorerBody')
+
+function loadExplorer(success = null) {
+  new Ajax('/api/explorer/')
+    .setSerializer((response) => response.text())
+    .setSuccess((data) => {
       $explorerBody.innerHTML = data
-      if (success !== null) {
-        success()
-      }
+      isNotNone(success, (func) => func())
     })
-    .catch((error) => {
+    .setError((error) => {
       console.log(error)
     })
+    .run()
 }
 
-function setActiveFile (id) {
+function setActiveFile(id) {
   localStorage.setItem('activeItem', id)
 }
 
-function removeActiveFile (id) {
+function removeActiveFile() {
   localStorage.removeItem('activeItem')
 }
 
-function checkActiveExisits () {
-  if (document.getElementById(`File-${getActiveFile()}`) === null) {
+function getActiveFile() {
+  return localStorage.getItem('activeItem')
+}
+
+function checkActiveExisits() {
+  if (getFileOfId(getActiveFile()) === null) {
     removeActiveFile()
     document.getElementById('markdown').style = 'display:none'
     window.history.replaceState(null, null, '/markdowns/')
   }
 }
 
-function getActiveFile () {
-  return localStorage.getItem('activeItem')
-}
-
 const $markdownBody = document.querySelector('.markdown-body')
-
-async function syncPreview (content) {
-  // eslint-disable-next-line no-undef
-  $markdownBody.innerHTML = marked.parse(content)
-  // eslint-disable-next-line no-undef
-  hljs.highlightAll()
-  // TODO: https://marked.js.org/using_pro#renderer これをみて色とかのcss変更だったりして虹のように飾れるようにしよう
-}
-
 const $content = document.getElementById('content')
 
+async function syncPreview(content) {
+  new Ajax('/api/markdown/', 'POST')
+    .setBody({ content })
+    .setSerializer((response) => response.text())
+    .setSuccess((data) => {
+      $markdownBody.innerHTML = data
+    })
+    .run()
+}
+
 $content.addEventListener('change', (event) => {
-  const csrftoken = getCookie('csrftoken')
   const $file = event.currentTarget
   const data = { id: getActiveFile(), body: $file.value, option: 'content' }
-  fetch('/api/file/', {
-    method: 'PUT',
-    body: JSON.stringify(data),
-    headers: {
-      'X-CSRFToken': csrftoken,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.status) {
-        console.log(data.message)
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  new Ajax('/api/file/', 'PUT').setBody(data).run()
 })
 
 $content.addEventListener('input', (event) => {
@@ -88,7 +176,9 @@ $content.addEventListener('input', (event) => {
 })
 
 $content.onkeydown = (e) => {
-  if (e.code !== 'Tab') { return }
+  if (e.code !== 'Tab') {
+    return
+  }
   e.preventDefault()
   const newPos = $content.selectionStart + 1
   const value = $content.value
@@ -99,27 +189,15 @@ $content.onkeydown = (e) => {
 }
 
 if (window.location.pathname === '/markdowns/' && getActiveFile() !== null) {
-  const csrftoken = getCookie('csrftoken')
-  fetch(`/api/file/${getActiveFile()}`, {
-    method: 'GET',
-    headers: {
-      'X-CSRFToken': csrftoken,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.status) {
-        window.location.pathname = ('/markdowns/' + getActiveFile())
-      }
+  new Ajax(`/api/file/${getActiveFile()}`)
+    .setStatusOk(() => {
+      window.location.pathname = '/markdowns/' + getActiveFile()
+    })
+    .setStatusNo(() => {
       removeActiveFile()
     })
-    .catch(() => {
-      removeActiveFile()
-    })
+    .run()
 }
-
-const $explorerBody = document.getElementById('ExplorerBody')
 
 $content.addEventListener('scroll', () => {
   const fileBody = $content.scrollHeight - 910
@@ -128,7 +206,7 @@ $content.addEventListener('scroll', () => {
   $markdownBody.scrollTop = markdownBody * fileParseint
 })
 
-function setOpens (ids) {
+function setOpens(ids) {
   localStorage.setItem('openFolders', JSON.stringify({ ids }))
 }
 
@@ -136,26 +214,26 @@ if (localStorage.getItem('openFolders') === null) {
   setOpens([])
 }
 
-function getOpens () {
+function getOpens() {
   return JSON.parse(localStorage.getItem('openFolders')).ids
 }
 
-function containOpen (id) {
+function containOpen(id) {
   return getOpens().includes(id)
 }
 
-function addOpen (id) {
+function addOpen(id) {
   if (containOpen(id)) {
     return
   }
   setOpens([...getOpens(), id])
 }
 
-function removeOpen (id) {
+function removeOpen(id) {
   if (!containOpen(id)) {
     return
   }
-  setOpens(getOpens().filter(i => i !== id))
+  setOpens(getOpens().filter((i) => i !== id))
 }
 
 // BLOCK: ContextMenus
@@ -168,48 +246,78 @@ const resetContextMenu = () => {
   }
 }
 
-const $explorerContextMenu = $contextMenus.querySelector('.ExplorerBodyContextMenu')
+const $explorerContextMenu = $contextMenus.querySelector(
+  '.ExplorerBodyContextMenu'
+)
 
-$explorerContextMenu.querySelector('.ContextMenuItem--explorerNewFile').addEventListener('click', () => {
-  fileCreateOfExplorer()
-})
+$explorerContextMenu
+  .querySelector('.ContextMenuItem--explorerNewFile')
+  .addEventListener('click', () => {
+    fileCreateOfExplorer()
+  })
 
-$explorerContextMenu.querySelector('.ContextMenuItem--explorerNewFolder').addEventListener('click', () => {
-  folderCreateOfExplorer()
-})
+$explorerContextMenu
+  .querySelector('.ContextMenuItem--explorerNewFolder')
+  .addEventListener('click', () => {
+    folderCreateOfExplorer()
+  })
 
 const $fileContextMenu = $contextMenus.querySelector('.FileContextMenu')
 const $fileContextMenuId = $fileContextMenu.querySelector('.fileId')
 
-$fileContextMenu.querySelector('.ContextMenuItem--fileDelete').addEventListener('click', () => {
-  fileDelete($fileContextMenuId.textContent)
-})
+$fileContextMenu
+  .querySelector('.ContextMenuItem--fileCopy')
+  .addEventListener('click', () => {
+    fileCopy($fileContextMenuId.textContent)
+  })
 
-$fileContextMenu.querySelector('.ContextMenuItem--fileRename').addEventListener('click', () => {
-  fileRename($fileContextMenuId.textContent)
-})
+$fileContextMenu
+  .querySelector('.ContextMenuItem--fileDelete')
+  .addEventListener('click', () => {
+    fileDelete($fileContextMenuId.textContent)
+  })
+
+$fileContextMenu
+  .querySelector('.ContextMenuItem--filePublish')
+  .addEventListener('click', () => {
+    filePublish($fileContextMenuId.textContent)
+  })
+
+$fileContextMenu
+  .querySelector('.ContextMenuItem--fileRename')
+  .addEventListener('click', () => {
+    setRename(getFileOfId($fileContextMenuId.textContent))
+  })
 
 const $folderContextMenu = $contextMenus.querySelector('.FolderContextMenu')
 
 const $folderContextMenuId = $folderContextMenu.querySelector('.folderId')
 
-$folderContextMenu.querySelector('.ContextMenuItem--newFile').addEventListener('click', () => {
-  fileCreate($folderContextMenuId.textContent)
-})
+$folderContextMenu
+  .querySelector('.ContextMenuItem--newFile')
+  .addEventListener('click', () => {
+    fileCreate($folderContextMenuId.textContent)
+  })
 
-$folderContextMenu.querySelector('.ContextMenuItem--newFolder').addEventListener('click', () => {
-  folderCreate($folderContextMenuId.textContent)
-})
+$folderContextMenu
+  .querySelector('.ContextMenuItem--newFolder')
+  .addEventListener('click', () => {
+    folderCreate($folderContextMenuId.textContent)
+  })
 
-$folderContextMenu.querySelector('.ContextMenuItem--folderDelete').addEventListener('click', () => {
-  folderDelete($folderContextMenuId.textContent)
-})
+$folderContextMenu
+  .querySelector('.ContextMenuItem--folderDelete')
+  .addEventListener('click', () => {
+    folderDelete($folderContextMenuId.textContent)
+  })
 
-$folderContextMenu.querySelector('.ContextMenuItem--folderRename').addEventListener('click', () => {
-  folderRename($folderContextMenuId.textContent)
-})
+$folderContextMenu
+  .querySelector('.ContextMenuItem--folderRename')
+  .addEventListener('click', () => {
+    setRename(getFolderOfId($folderContextMenuId.textContent))
+  })
 
-function showContextMenu (contextMenu, x, y) {
+function showContextMenu(contextMenu, x, y) {
   resetContextMenu()
   enableContextMenu = contextMenu
   contextMenu.style.display = 'block'
@@ -260,61 +368,71 @@ document.querySelectorAll('.explorer-open').forEach(($open) => {
   })
 })
 
-let $renameElement = null
-function resetRename (newRename = null) {
-  if ($renameElement !== null) {
-    $renameElement.classList.remove('rename-item')
-    $renameElement = null
+function isFile(element) {
+  return element.id.startsWith('File-')
+}
+
+function isFolder(element) {
+  return element.id.startsWith('Folder-')
+}
+
+function getFileId(fileElement) {
+  return fileElement.id.replace('File-', '')
+}
+
+function getFolderId(folderElement) {
+  return folderElement.id.replace('Folder-', '')
+}
+
+function getFileOfId(id) {
+  return document.getElementById(`File-${id}`)
+}
+
+function getFolderOfId(id) {
+  return document.getElementById(`Folder-${id}`)
+}
+
+function insertFileHtml($rootElement, fileHtml) {
+  let notBreaked = true
+  const $children = $rootElement.children
+  for (let index = 0; index < $children.length; index++) {
+    const $child = $children[index]
+    if (isFolder($child)) {
+      continue
+    }
+    $child.insertAdjacentHTML('beforebegin', fileHtml)
+    notBreaked = false
+    break
   }
-  if (newRename !== null) {
-    newRename.classList.add('rename-item')
-    const $input = newRename.querySelector('.pane-item-input')
-    $input.value = newRename.querySelector('.pane-item-title').textContent
-    $input.focus()
-    $input.select()
-    $renameElement = newRename
+
+  if (notBreaked) {
+    $rootElement.insertAdjacentHTML('beforeend', fileHtml)
   }
 }
 
-function fileCreateOfExplorer () {
-  const csrftoken = getCookie('csrftoken')
-  fetch('/api/explorer/file/', {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': csrftoken,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.status) {
-        console.log(data.message)
-        return
-      }
-      const $children = $explorerBody.children
-      let breaked = true
-      for (const $item of $children) {
-        if (!$item.classList.contains('FolderItem')) {
-          console.log($item.id)
-          $item.insertAdjacentHTML('beforebegin', data.successHTML)
-          breaked = false
-          break
-        }
-      }
-      if (breaked) {
-        $explorerBody.insertAdjacentHTML('beforeend', data.successHTML)
-      }
+function folderCreateOfExplorer() {
+  new Ajax('/api/explorer/folder/', 'POST')
+    .setStatusOk((data) => {
+      $explorerBody.insertAdjacentHTML('afterbegin', data.successHTML)
+      folderSet(data.id)
+      setRename(getFolderOfId(data.id))
+    })
+    .run()
+}
+
+function fileCreateOfExplorer() {
+  new Ajax('/api/explorer/file/', 'POST')
+    .setStatusOk((data) => {
+      insertFileHtml($explorerBody, data.successHTML)
       fileSet(data.id)
       fileSelect(data.id)
-      fileRename(data.id)
+      setRename(getFileOfId(data.id))
     })
-    .catch((error) => {
-      console.log(error)
-    })
+    .run()
 }
 
-function folderReload (id) {
-  const $folder = document.getElementById(`Folder-${id}`)
+function folderReload(id) {
+  const $folder = getFolderOfId(id)
   if ($folder.querySelector('.pane-item-children').children.length === 0) {
     removeOpen(id)
     $folder.classList.remove('folder-open')
@@ -326,70 +444,79 @@ function folderReload (id) {
   }
 }
 
-function folderReloadElement ($item) {
+function folderReloadElement($item) {
   const id = $item.id
   if (id.includes('Folder-')) {
     folderReload(id.replace('Folder-', ''))
   }
 }
 
-function folderCreateOfExplorer () {
-  const csrftoken = getCookie('csrftoken')
-  fetch('/api/explorer/folder/', {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': csrftoken,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.status) {
-        console.log(data.message)
-        return
-      }
-      $explorerBody.insertAdjacentHTML('afterbegin', data.successHTML)
-      folderSet(data.id)
-      folderRename(data.id)
-    })
-}
-
-function folderCreate (parentFolderId) {
-  const csrftoken = getCookie('csrftoken')
-  const data = { id: parentFolderId }
-  fetch('/api/folder/', {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'X-CSRFToken': csrftoken,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.status) {
-        console.log(data.message)
-        return
-      }
-      const $folder = document.getElementById(`Folder-${parentFolderId}`)
+function folderCreate(parentFolderId) {
+  new Ajax('/api/folder/', 'POST')
+    .setBody({ id: parentFolderId })
+    .setStatusOk((data) => {
+      const $folder = getFolderOfId(parentFolderId)
       $folder.classList.add('folder-open')
-      $folder.querySelector('.pane-item-children').insertAdjacentHTML('afterbegin', data.successHTML)
+      $folder
+        .querySelector('.pane-item-children')
+        .insertAdjacentHTML('afterbegin', data.successHTML)
       folderSet(data.id)
       folderReload(parentFolderId)
-      folderRename(data.id)
+      setRename(getFolderOfId(data.id))
     })
-    .catch((error) => {
-      console.log(error)
-    })
+    .run()
 }
 
-function folderRename (id) {
-  const $folder = document.getElementById(`Folder-${id}`)
-  resetRename($folder)
+let $renameElement = null
+function setRename($newRename = null) {
+  if ($renameElement !== null) {
+    isNotNone(document.getElementById('RenameInput'), (elem) => elem.remove())
+    $renameElement.classList.remove('rename-item')
+    $renameElement = null
+  }
+  if ($newRename === null) {
+    return
+  }
+  $newRename.classList.add('rename-item')
+  const $header = $newRename.querySelector('.pane-item-header')
+  $header.insertAdjacentHTML(
+    'beforeend',
+    '<input id="RenameInput" class="pane-item-input" spellcheck="false">'
+  )
+  const $input = document.getElementById('RenameInput')
+  const $title = $newRename.querySelector('.pane-item-title')
+  const itFile = isFile($newRename)
+  const id = itFile ? getFileId($newRename) : getFolderId($newRename)
+  const url = itFile ? 'file' : 'folder'
+  $input.value = $title.textContent
+  $input.focus()
+  $input.select()
+  const controller = new AbortController()
+  $input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      new Ajax(`/api/${url}/`, 'PUT')
+        .setBody({ id, name: $input.value, option: 'name' })
+        .setStatusOk((data) => {
+          $title.textContent = data.name
+          controller.abort()
+          setRename()
+        })
+        .run()
+    }
+  })
+  $input.addEventListener(
+    'blur',
+    () => {
+      setRename()
+    },
+    { signal: controller.signal }
+  )
+  $renameElement = $newRename
 }
 
-function folderSet (id) {
-  const $folderItem = document.getElementById(`Folder-${id}`)
+function folderSet(id) {
+  const $folderItem = getFolderOfId(id)
   const $folderItemHeader = $folderItem.querySelector('.FolderItem-header')
 
   $folderItemHeader.addEventListener('click', () => {
@@ -408,102 +535,49 @@ function folderSet (id) {
     $folderContextMenuId.textContent = id
     showContextMenu($folderContextMenu, event.pageX, event.pageY)
   })
-  const $folderRename = $folderItemHeader.querySelector('.pane-item-rename')
-  $folderRename.addEventListener('submit', (event) => {
-    event.preventDefault()
-    const csrftoken = getCookie('csrftoken')
-    const data = { id, name: $folderRename.querySelector('.pane-item-title').value }
-    fetch('/api/folder/', {
-      method: 'PUT',
-      body: JSON.stringify(data),
-      headers: {
-        'X-CSRFToken': csrftoken,
-        'Content-Type': 'application/json'
-      }
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (!data.status) {
-          console.log(data.message)
-          return
-        }
-        resetRename()
-        $folderItemHeader.querySelector('.FolderItem-title').textContent = data.name
-      }).catch((error) => {
-        console.log(error)
-      })
-  })
 }
 
-function folderDelete (id) {
-  const csrftoken = getCookie('csrftoken')
-  const data = { id }
-  fetch('/api/folder/', {
-    method: 'DELETE',
-    body: JSON.stringify(data),
-    headers: {
-      'X-CSRFToken': csrftoken,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.status) {
-        console.log(data.message)
-        return
-      }
-      const $folder = document.getElementById(`Folder-${id}`)
+function folderDelete(id) {
+  new Ajax('/api/folder/', 'DELETE')
+    .setBody({ id })
+    .setStatusOk(() => {
+      const $folder = getFolderOfId(id)
       const $parent = $folder.parentElement.parentElement
       $folder.remove()
       folderReloadElement($parent)
       checkActiveExisits()
     })
-    .catch((error) => {
-      console.log(error)
-    })
+    .run()
 }
 
-function fileRename (id) {
-  const $file = document.getElementById(`File-${id}`)
-  resetRename($file)
-}
-
-function fileSelect (id) {
+function fileSelect(id) {
   const $opendFile = $explorerPane.querySelectorAll('.file-open')
   for (const $openFile of $opendFile) {
     $openFile.classList.remove('file-open')
   }
-  const $fileItem = document.getElementById(`File-${id}`)
+  const $fileItem = getFileOfId(id)
   $fileItem.classList.add('file-open')
-  const csrftoken = getCookie('csrftoken')
-  fetch(`/api/file/${id}`, {
-    method: 'GET',
-    headers: {
-      'X-CSRFToken': csrftoken,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
+  new Ajax(`/api/file/${id}`)
+    .setStatusOk((data) => {
       const content = data.content
       document.getElementById('content').value = content
       setActiveFile(id)
       syncPreview(content)
       document.getElementById('markdown').style = 'display:flex'
+      window.history.replaceState(null, null, `/markdowns/${id}`)
     })
-    .catch((error) => {
-      console.log(error)
-    })
-  window.history.replaceState(null, null, `/markdowns/${id}`)
+    .run()
 }
 
-function fileSet (id) {
-  const $fileItem = document.getElementById(`File-${id}`)
+function fileSet(id) {
+  const $fileItem = getFileOfId(id)
   const $fileItemHeader = $fileItem.querySelector('.FileItem-header')
   $fileItemHeader.addEventListener('click', () => {
+    if ($fileItem.classList.contains('rename-item')) {
+      return
+    }
     if ($fileItem.classList.contains('file-open')) {
-      // TODO: rename file function
-      // WARN: ここが昨日の続き↑
+      setRename($fileItem)
       return
     }
     fileSelect(id)
@@ -512,110 +586,126 @@ function fileSet (id) {
     $fileContextMenuId.textContent = id
     showContextMenu($fileContextMenu, event.pageX, event.pageY)
   })
-  const $fileRename = $fileItemHeader.querySelector('.pane-item-rename')
-  $fileRename.addEventListener('submit', (event) => {
-    event.preventDefault()
-    const csrftoken = getCookie('csrftoken')
-    const data = { id, name: $fileRename.querySelector('.pane-item-title').value, option: 'name' }
-    fetch('/api/file/', {
-      method: 'PUT',
-      body: JSON.stringify(data),
-      headers: {
-        'X-CSRFToken': csrftoken,
-        'Content-Type': 'application/json'
-      }
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (!data.status) {
-          console.log(data.message)
-          return
-        }
-        resetRename()
-        $fileItemHeader.querySelector('.FileItem-title').textContent = data.name
-      }).catch((error) => {
-        console.log(error)
-      })
-  })
 }
 
-function fileCreate (parentFolderId) {
-  const csrftoken = getCookie('csrftoken')
-  const data = { id: parentFolderId }
-  fetch('/api/file/', {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'X-CSRFToken': csrftoken,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.status) {
-        console.log(data.message)
-        return
-      }
-      const $folder = document.getElementById(`Folder-${parentFolderId}`)
+function fileCreate(parentFolderId) {
+  new Ajax('/api/file/', 'POST')
+    .setBody({ id: parentFolderId })
+    .setStatusOk((data) => {
+      const $folder = getFolderOfId(parentFolderId)
       $folder.classList.add('folder-open')
-      const $children = $folder.querySelector('.pane-item-children')
-      const $childrens = $children.children
-      if ($childrens.length === 0) {
-        $children.insertAdjacentHTML('afterbegin', data.successHTML)
-      } else {
-        let breaked = true
-        for (const $item of $childrens) {
-          if (!$item.classList.contains('FolderItem')) {
-            $item.insertAdjacentHTML('beforebegin', data.successHTML)
-            breaked = false
-            break
-          }
-        }
-        if (breaked) {
-          $folder.insertAdjacentHTML('beforeend', data.successHTML)
-        }
-      }
+      insertFileHtml(
+        $folder.querySelector('.pane-item-children'),
+        data.successHTML
+      )
       fileSet(data.id)
       fileSelect(data.id)
-      fileRename(data.id)
+      setRename(getFileOfId(data.id))
       folderReload(parentFolderId)
     })
-    .catch((error) => {
-      console.log(error)
-    })
+    .run()
 }
 
-function fileDelete (id) {
-  const csrftoken = getCookie('csrftoken')
-  const data = { id }
-  fetch('/api/file/', {
-    method: 'DELETE',
-    body: JSON.stringify(data),
-    headers: {
-      'X-CSRFToken': csrftoken,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.status) {
-        console.log(data.message)
-        return
-      }
-      const $file = document.getElementById(`File-${id}`)
+function fileDelete(id) {
+  new Ajax('/api/file', 'DELETE')
+    .setBody({ id })
+    .setStatusOk(() => {
+      const $file = getFileOfId(id)
       const $parent = $file.parentElement.parentElement
       $file.remove()
       folderReloadElement($parent)
       checkActiveExisits()
     })
-    .catch((error) => {
-      console.log(error)
+    .run()
+}
+
+// TODO: add file copy action
+function fileCopy(id) {
+  const $file = getFileOfId(id)
+  const hasParent = $file.parentElement.classList.contains('pane-item-children')
+  if (hasParent) {
+    console.log('has parent')
+  } else {
+    new Ajax('/api/explorer/file/', 'POST')
+      .setBody({
+        name: $file.querySelector('.FileItem-title').textContent + "'s Copy"
+      })
+      .setStatusOk((data) => {
+        $file.insertAdjacentHTML('afterend', data.successHTML)
+        fileSet(data.id)
+        fileSelect(data.id)
+        setRename(getFileOfId(data.id))
+      })
+      .run()
+  }
+}
+
+const $managePublish = document.getElementById('Publish')
+
+document.getElementById('PublishClose').addEventListener('click', () => {
+  $managePublish.classList.remove('open')
+  switchOuter.classList.remove('active')
+})
+
+$managePublish.addEventListener('click', (e) => {
+  if (e.target === $managePublish) {
+    $managePublish.classList.remove('open')
+    switchOuter.classList.remove('active')
+  }
+})
+
+const switchOuter = document.getElementById('PublishSwitchOuter')
+
+switchOuter.addEventListener('click', () => {
+  const toggle = !switchOuter.classList.contains('active')
+  const id = $managePublish.querySelector('.fileId').textContent
+  new Ajax('/api/file/', 'PUT')
+    .setBody({ id, option: 'is_published', is_published: toggle })
+    .setStatusOk(() => {
+      const $file = getFileOfId(id)
+      $file.classList.toggle('publish-item')
     })
+    .run()
+  switchOuter.classList.toggle('active')
+})
+
+const $PublishName = document.getElementById('PublishName')
+const $PublishFileId = document.getElementById('UrlFileId')
+
+const $UrlCopy = document.getElementById('UrlCopy')
+let timerId = 0
+$UrlCopy.addEventListener('click', () => {
+  navigator.clipboard.writeText(
+    UrlDomain + 'publish/' + $PublishFileId.textContent
+  )
+  $UrlCopy.textContent = 'Copied!'
+  clearTimeout(timerId)
+  timerId = setTimeout(() => {
+    $UrlCopy.textContent = 'Copy Link'
+  }, 1200)
+})
+
+function filePublish(id) {
+  $managePublish.querySelector('.fileId').textContent = id
+  $PublishFileId.textContent = id
+  $managePublish.classList.add('open')
+  new Ajax(`/api/file/${id}?option=is_published`)
+    .setStatusOk((data) => {
+      if (data.is_published) {
+        switchOuter.classList.add('active')
+      }
+    })
+    .run()
+  new Ajax(`/api/file/${id}?option=name`)
+    .setStatusOk((data) => {
+      $PublishName.textContent = data.name
+    })
+    .run()
 }
 
 loadExplorer(() => {
   for (const id of getOpens()) {
-    const $folder = document.getElementById(`Folder-${id}`)
+    const $folder = getFolderOfId(id)
     if ($folder === null) {
       removeOpen(id)
       return
@@ -623,12 +713,16 @@ loadExplorer(() => {
     $folder.classList.add('folder-open')
   }
 
-  if (/markdowns\/([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})/.test(window.location.pathname)) {
+  if (
+    /markdowns\/([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})/.test(
+      window.location.pathname
+    )
+  ) {
     setActiveFile(window.location.pathname.replace('/markdowns/', ''))
   }
 
   if (getActiveFile() !== null) {
-    document.getElementById(`File-${getActiveFile()}`).classList.add('file-open')
+    getFileOfId(getActiveFile()).classList.add('file-open')
   }
 
   $explorerBody.querySelectorAll('.FolderItem').forEach(($folderItem) => {
@@ -640,10 +734,4 @@ loadExplorer(() => {
     const id = $fileItem.id.replace('File-', '')
     fileSet(id)
   })
-
-  for (const $item of document.querySelectorAll('.pane-item-input')) {
-    $item.addEventListener('blur', () => {
-      resetRename()
-    }, true)
-  }
 })

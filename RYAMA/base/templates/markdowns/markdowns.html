@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head %}
-    <link rel="stylesheet" href="{% static 'css/markdowns/main.css' %}" />
     <link rel="stylesheet" href="{% static 'css/markdowns/markdown.css' %}" />
-    <link rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/tokyo-night-dark.min.css">
+    <link rel="stylesheet" href="{% static 'css/markdowns/main.css' %}" />
 {% endblock head %}
 {% block content %}
     <div id="layout">
@@ -111,7 +109,28 @@
             </ul>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <div class="ModalWindow" id="Publish">
+        <span class="fileId invisible"></span>
+        <div class="ModalMenu">
+            <i id="PublishClose" class="ph ph-x"></i>
+            <div class="ModalInner">
+                <h1 class="ModalTitle">
+                    Publish &nbsp; "<span id="PublishName"></span>"
+                </h1>
+                <div class="ModalDescription"></div>
+                <div class="ModalContext">
+                    <div id="PublishSwitchOuter">
+                        <div id="PublishSwitchToggle"></div>
+                    </div>
+                    <div class="PublishLinks">
+                        <span class="PublishLink">
+                            <span id="UrlDomain"></span>publish/<span id="UrlFileId"></span>
+                        </span>
+                        <a id="UrlCopy">Copy Link</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="{% static 'js/markdowns/markdowns.js' %}"></script>
 {% endblock content %}

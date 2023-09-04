@@ -1,0 +1,181 @@
+body {
+  color: #fff;
+  background-color: #101010;
+}
+
+.hero {
+  display: flex;
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  overflow-y: hidden;
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  width: 45vw;
+  padding-top: 40px;
+  text-align: center;
+}
+
+.hero-outer {
+  flex-grow: 1;
+}
+
+.hero-title {
+  margin-bottom: 0;
+  font-family: 'Noto SerifJP', serif;
+  font-size: 3.2rem;
+  font-weight: 300;
+}
+
+.hero-title > span {
+  color: #3a777b;
+  text-decoration: bold;
+}
+
+.hero-subtitle {
+  color: gray;
+}
+
+.to-signup {
+  display: inline-block;
+  width: 250px;
+  height: 50px;
+  font: 20px/49px 'Noto Sans JP', sans-serif;
+  color: #fdfdfd;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  background-color: #008aff;
+  border-color: #008aff;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.to-signup:hover {
+  border-radius: 8px;
+  transform: scale(1.02);
+}
+
+.shadow {
+  margin-top: 10px;
+}
+
+.shadowlink {
+  margin: 0 10px;
+  color: #999;
+  text-decoration: none;
+  border-bottom: 1px solid rgb(0 138 255 / 40%);
+}
+
+.hero-screenshot {
+  float: right;
+  width: 50vw;
+  border-top: 1px solid #3a777b;
+  border-left: 1px solid #3a777b;
+}
+
+#about {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  padding: 10rem;
+}
+
+.section {
+  margin: 2rem;
+  font-size: 1.5rem;
+}
+
+.section span {
+  font-weight: 500;
+}
+
+.section p {
+  margin-top: 0.2rem;
+  color: gray;
+}
+
+main .logo {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  text-align: center;
+}
+
+.title {
+  font-family: 'Noto SerifJP', serif;
+  font-size: 3rem;
+  text-align: center;
+}
+
+.logo .to-signup {
+  margin: 0.1rem auto;
+}
+
+#features {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 10rem;
+  padding-top: 0;
+  justify-content: space-between;
+}
+
+.feature {
+  position: relative;
+  width: 500px;
+  align-items: center;
+  height: 500px;
+  padding: 2rem;
+  margin: 1rem;
+  background-color: #262627;
+  border-radius: 20px;
+}
+
+.feature flex {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.feature-title {
+  font-size: 1.5rem;
+}
+
+.feature-description {
+  margin: 1rem 0;
+  color: #a2a3a2;
+}
+
+.feature-screenshot {
+  border-radius: 20px;
+  height: 350px;
+}
+
+#publish {
+  width: 100%;
+  height: 75vh;
+}
+
+.publish-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.publish-slogan {
+  font-size: 2rem;
+}
+
+.publish-screenshots {
+  font-size: 100px;
+}
+
+.publish-message {
+  font-size: 50px;
+}

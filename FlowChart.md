@@ -49,15 +49,18 @@ refrence: https://stackedit.io/app#
 - chagne envet of '#file' to save change of it file id
 - click folderItem to opensFolder localStorage
 
-#### Right Click of Folder
+## file Element
 
+```mermaid
+flowchart TD
 
-- show Modal 
-    > hover で 何か色付けよう
-    - Delete
-    - 
+start(Create Element) --> loop_s[/loop children\]
+loop_e[\end loop/]
+loop_s --> if{is child is folder}
+if --> |yes| loop_s
+if --> |no| add_beforebegin(insert html to beforebegin of this loop child)
+add_beforebegin --> loop_e
+loop_e --> notBreaked{loop not breaked}
+notBreaked --> |yes| add_node(add node insert afterbegin)
 
-markdowns/<int:id> に対して、
-これは普通に/markdownsにredirectして、
-最初からidのファイルが開かれてるよであとは全部ajaxでスムーズにしたほうがなんか気がいいと思う.
-Folder,FileのidをuuidFieldにしよう。
+```

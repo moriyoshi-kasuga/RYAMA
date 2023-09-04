@@ -1,19 +1,12 @@
 import json
-from http import HTTPStatus
 
-import mistletoe
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
-from django.contrib.auth.views import LoginView
-from django.http import HttpResponse, JsonResponse
-from django.http.response import (Http404, HttpResponseNotAllowed,
-                                  HttpResponseNotFound)
-from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
-from django.views.generic.edit import UpdateView
 
+from .markdown import convert_html
 from .models import File, Folder
 
 
@@ -23,33 +16,55 @@ def page_home(request):
     return render(request, "homes/home.html")
 
 
-def page_publish(request):
-    if request.method == "GEt":
-        return render(request, "homes/publish.html")
-    return render(request, "homes/publish.html")
+def page_publish(request, id):
+    try:
+        file = File.objects.get(id=id, is_published=True)
+        return render(
+            request,
+            "publish.html",
+            {"preview": convert_html(file.content), "name": file.name},
+        )
+    except Exception:
+        return redirect("home")
 
 
-def page_about(request):
-    if request.method == "GET":
-        return render(request, "homes/about.html")
-    return render(request, "homes/about.html")
+def page_login(request):
+    context = {}
+    if request.method == "POST":
+        username = request.POST["username"]
+        if username:
+            context["username"] = username
+            password = request.POST["password"]
+            if password:
+                user = authenticate(username=username, password=password)
+                if user:
+                    login(request, user)
+                    return redirect("markdowns")
+                else:
+                    context["error"] = "It Account Not Existis"
+            else:
+                context["error"] = "Input Password"
+        else:
+            context["error"] = "Input Username"
 
-
-def page_features(request):
-    if request.method == "GET":
-        return render(request, "homes/features.html")
-    return render(request, "homes/features.html")
-
-
-class Login(LoginView):
-    template_name = "homes/login.html"
+    return render(request, "homes/login.html", context)
 
 
 def page_signup(request):
-    return render(request, "homes/signup.html")
-
-
-# NOTE: Markdowns
+    context = {}
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+            login(request, user)
+            return redirect("markdowns")
+        else:
+            context["error"] = "An error occured during registration"
+    else:
+        form = UserCreationForm()
+    context["form"] = form
+    return render(request, "homes/signup.html", context)
 
 
 def page_markdowns(request):
@@ -72,12 +87,9 @@ def page_file(request, id):
         return redirect("markdowns")
     file = filter.first()
     context["content"] = file.content
-    context["preview"] = mistletoe.markdown(file.content)
+    context["preview"] = convert_html(file.content)
     context["active_file"] = id
     return render(request, "markdowns/markdowns.html", context)
-
-
-# NOTE:EMPTY
 
 
 def api_explorer_get(request):
@@ -115,10 +127,12 @@ def api_explorer_file(request):
     )
     match request.method:
         case "POST":
+            body: dict = json.loads(request.body)
+            name = body.get("name", "Empty")
             file = File.objects.create(
                 user=user,
                 parent=explorer,
-                name="Empty",
+                name=name,
             )
             response = {"status": True, "id": file.id}
             response["successHTML"] = render_to_string(
@@ -220,6 +234,10 @@ def api_file(request):
                     file.name = name
                     file.save()
                     return JsonResponse({"status": True, "name": name})
+                case "is_published":
+                    file.is_published = bool(context["is_published"])
+                    file.save()
+                    return JsonResponse({"status": True})
         case "DELETE":
             file.delete()
             return JsonResponse(
@@ -240,4 +258,18 @@ def api_file_get(request, id):
         return JsonResponse(
             {"status": False, "message": "File not found."},
         )
-    return JsonResponse({"status": True, "content": file.content})
+    option = request.GET.get("option")
+    match option:
+        case "is_published":
+            return JsonResponse({"status": True, "is_published": file.is_published})
+        case "name":
+            return JsonResponse({"status": True, "name": file.name})
+        case "content" | None:
+            return JsonResponse({"status": True, "content": file.content})
+
+
+def api_markdown(request):
+    context = json.loads(request.body)
+    match request.method:
+        case "POST":
+            return HttpResponse(convert_html(context["content"]))
