@@ -625,15 +625,27 @@ function fileCopy(id) {
   if (hasParent) {
     console.log('has parent')
   } else {
+    let createId = null
     new Ajax('/api/explorer/file/', 'POST')
       .setBody({
         name: $file.querySelector('.FileItem-title').textContent + "'s Copy"
       })
       .setStatusOk((data) => {
+        // FIX: fix insert
+        insertFileHtml()
         $file.insertAdjacentHTML('beforebegin', data.successHTML)
         fileSet(data.id)
         fileSelect(data.id)
         setRename(getFileOfId(data.id))
+        createId = data.id
+      })
+      .run()
+    // FIX: content not copied pls fix
+    new Ajax(`/api/file/${createId}`)
+      .setStatusOk((data) => {
+        new Ajax(`/api/file/`, 'PUT')
+          .setBody({ id: createId, option: 'content', body: data.content })
+          .run()
       })
       .run()
   }
