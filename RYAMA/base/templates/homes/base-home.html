@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block head %}
+    {% load static %}
     <link rel="stylesheet" href="{% static 'css/homes/base-home.css' %}">
     {% block heads %}
     {% endblock heads %}
@@ -43,5 +43,4 @@
         {% block main %}
         {% endblock main %}
     </main>
-    <!-- TODO: add footer -->
 {% endblock content %}

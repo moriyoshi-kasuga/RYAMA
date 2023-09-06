@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{% static 'css/homes/home.css' %}">
 {% endblock heads %}
 {% block main %}
-    <div class="hero">
+    <div class="hero" id="top">
         <div class="hero-inner">
             <h1 class="hero-title">
                 <span>R</span>ainbow <span>Y</span>onder <span>A</span>dorn
@@ -127,4 +127,41 @@
             <div class="publish-message">簡単1Clickで外部に公開することができます。</div>
         </div>
     </div>
+    <!-- TODO: あとはこに実際にアカウントを作って始めましょう的なやつを作ろう -->
+    <footer>
+        <div class="footer">
+            <div class="logos">
+                <a href="/" class="footer-logo">
+                    <img src="{% static 'images/icon.png' %}"
+                         alt="icon"
+                         height="50"
+                         width="50">
+                    <img src="{% static 'images/logo.png' %}"
+                         alt="logo"
+                         height="50"
+                         width="165">
+                </a>
+            </div>
+            <div class="footer-links">
+                <h2>SITE MAP</h2>
+                <ul class="footer-ul">
+                    <li>
+                        <a href="#top">TOP</a>
+                    </li>
+                    <li>
+                        <a href="#publish">公開機能</a>
+                    </li>
+                    <li>
+                        <a href="#about">サイト概要</a>
+                    </li>
+                    <li>
+                        <a href="#features">使い方</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="buttons">
+                <a href="{% url 'markdowns' %}" class="to-signup">Sign up for free</a>
+            </div>
+        </div>
+    </footer>
 {% endblock main %}
