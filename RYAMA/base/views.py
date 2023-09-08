@@ -47,7 +47,6 @@ def page_login(request):
                 context["error"] = "Input Password"
         else:
             context["error"] = "Input Username"
-
     return render(request, "homes/login.html", context)
 
 

@@ -182,6 +182,8 @@ main .logo {
   font-size: 50px;
 }
 
+
+
 .footer {
   width: 100%;
   height: 200px;
@@ -189,11 +191,9 @@ main .logo {
   background-color: #121416;
   border-top: 2px solid #262626;
   justify-content: space-between;
+  padding: 0 10%;
 }
 
-.logos {
-  margin: 0 20px;
-}
 
 .footer-logo {
   align-items: center;
