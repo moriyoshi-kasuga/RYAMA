@@ -12,9 +12,14 @@
     </div>
   </div>
   <div class="pane-item-children">
-    {% if not empty %} {% if not node.is_leaf_node %}{{ children }}{% endif %}
-    {% for file in node.files.all %} {% include "markdowns/file.html" %} {%
-    endfor %} {% endif %}
+    {% if not empty %}
+    {% if not node.is_leaf_node %}
+    {{ children }}
+    {% endif %}
+    {% for file in node.files.all %}
+    {% include "markdowns/file.html" %} 
+    {% endfor %} 
+    {% endif %}
   </div>
 </div>
 
