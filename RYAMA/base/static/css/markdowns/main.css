@@ -189,6 +189,10 @@ body {
   font-weight: bold;
 }
 
+.context-open > .pane-item-header {
+  background-color: #003766;
+}
+
 .pane-item-toggler {
   display: inline-block;
   font-size: 16px;
@@ -216,6 +220,7 @@ body {
   font-size: 15px;
   word-wrap: break-word;
 }
+
 
 :is(.FolderItem, .FileItem) > .pane-item-header #RenameInput {
   display: none;
