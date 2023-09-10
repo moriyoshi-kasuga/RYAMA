@@ -130,8 +130,7 @@ main .logo {
 
 .feature {
   position: relative;
-  width: 500px;
-  min-width: 480px;
+  min-width: 460px;
   max-height: 500px;
   padding: 2%;
   margin: 1%;
@@ -182,7 +181,18 @@ main .logo {
   font-size: 50px;
 }
 
+.use {
+  width: 100%;
+  display: flex;
+  margin-bottom: 100px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
+.use h2 {
+  font-size: 5rem;
+}
 
 .footer {
   width: 100%;
@@ -194,11 +204,10 @@ main .logo {
   padding: 0 10%;
 }
 
-
 .footer-logo {
   align-items: center;
   display: flex;
-  width: calc(100% + 40px);
+  /* width: calc(100% + 40px); */
   height: 100%;
 }
 
@@ -239,4 +248,27 @@ main .logo {
   margin: auto 20px;
   display: flex;
   align-items: center;
+}
+
+.footer-button {
+  display: inline-block;
+  width: 250px;
+  height: 50px;
+  font:
+    20px/49px 'Noto Sans JP',
+    sans-serif;
+  color: #fdfdfd;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  background-color: #008aff;
+  border-color: #008aff;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.footer-button:hover {
+  border-radius: 8px;
+  transform: scale(1.02);
 }
