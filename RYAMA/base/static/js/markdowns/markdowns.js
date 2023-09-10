@@ -692,15 +692,35 @@ switchOuter.addEventListener('click', () => {
   switchOuter.classList.toggle('active');
 });
 
+const copyTextToClipboard = (text) => {
+  if (navigator.clipboard) return navigator.clipboard.writeText(text);
+
+  const isIos = navigator.userAgent.match(/ipad|iphone/i);
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  document.body.appendChild(textarea);
+  if (isIos) {
+    const range = document.createRange();
+    range.selectNodeContents(textarea);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+    textarea.setSelectionRange(0, 999999);
+  } else {
+    textarea.select();
+  }
+  // eslint-disable-next-line no-unused-vars
+  const result = document.execCommand('copy');
+  document.body.removeChild(textarea);
+};
+
 const $PublishName = document.getElementById('PublishName');
 const $PublishFileId = document.getElementById('UrlFileId');
 
 const $UrlCopy = document.getElementById('UrlCopy');
 let timerId = 0;
 $UrlCopy.addEventListener('click', () => {
-  navigator.clipboard.writeText(
-    UrlDomain + 'publish/' + $PublishFileId.textContent,
-  );
+  copyTextToClipboard(UrlDomain + 'publish/' + $PublishFileId.textContent);
   $UrlCopy.textContent = 'Copied!';
   clearTimeout(timerId);
   timerId = setTimeout(() => {
