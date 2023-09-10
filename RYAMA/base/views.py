@@ -1,4 +1,5 @@
 import json
+import uuid
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
@@ -46,7 +47,6 @@ def page_login(request):
                 context["error"] = "Input Password"
         else:
             context["error"] = "Input Username"
-
     return render(request, "homes/login.html", context)
 
 
@@ -128,12 +128,21 @@ def api_explorer_file(request):
     match request.method:
         case "POST":
             body: dict = json.loads(request.body)
-            name = body.get("name", "Empty")
-            file = File.objects.create(
-                user=user,
-                parent=explorer,
-                name=name,
-            )
+            if body.get("option") == "copy":
+                original = uuid.UUID(body["original"])
+                origin = File.objects.get(user=user, id=original)
+                file = File.objects.create(
+                    user=user,
+                    parent=explorer,
+                    name=origin.name + "'s copy",
+                    content=origin.content,
+                )
+            else:
+                file = File.objects.create(
+                    user=user,
+                    parent=explorer,
+                    name="Empty",
+                )
             response = {"status": True, "id": file.id}
             response["successHTML"] = render_to_string(
                 "markdowns/file.html", {"file": file}
@@ -198,11 +207,22 @@ def api_file(request):
     id = context["id"]
     match request.method:
         case "POST":
-            file = File.objects.create(
-                user=user,
-                parent=Folder.objects.get(user=user, id=id),
-                name="Empty",
-            )
+            parent = Folder.objects.get(user=user, id=id)
+            if context.get("option") == "copy":
+                original = uuid.UUID(context["original"])
+                origin = File.objects.get(user=user, id=original)
+                file = File.objects.create(
+                    user=user,
+                    parent=parent,
+                    name=origin.name + "'s copy",
+                    content=origin.content,
+                )
+            else:
+                file = File.objects.create(
+                    user=user,
+                    parent=parent,
+                    name="Empty",
+                )
             response = {"status": True, "id": file.id}
             response["successHTML"] = render_to_string(
                 "markdowns/file.html", {"file": file}

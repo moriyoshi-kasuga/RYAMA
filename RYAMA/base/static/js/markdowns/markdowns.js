@@ -621,31 +621,33 @@ function fileDelete(id) {
 
 function fileCopy(id) {
   const $file = getFileOfId(id)
-  const hasParent = $file.parentElement.classList.contains('pane-item-children')
-  if (hasParent) {
-    console.log('has parent')
-  } else {
-    let createId = null
-    new Ajax('/api/explorer/file/', 'POST')
+  const $parent = $file.parentElement
+  const isParentFolder = $parent.classList.contains('pane-item-children')
+  if (isParentFolder) {
+    new Ajax('/api/file/', 'POST')
       .setBody({
-        name: $file.querySelector('.FileItem-title').textContent + "'s Copy"
+        option: 'copy',
+        original: id,
+        id: getFolderId($parent.parentElement)
       })
       .setStatusOk((data) => {
-        // FIX: fix insert
-        insertFileHtml()
-        $file.insertAdjacentHTML('beforebegin', data.successHTML)
+        insertFileHtml($parent, data.successHTML)
         fileSet(data.id)
         fileSelect(data.id)
         setRename(getFileOfId(data.id))
-        createId = data.id
       })
       .run()
-    // FIX: content not copied pls fix
-    new Ajax(`/api/file/${createId}`)
+  } else {
+    new Ajax('/api/explorer/file/', 'POST')
+      .setBody({
+        option: 'copy',
+        original: id
+      })
       .setStatusOk((data) => {
-        new Ajax(`/api/file/`, 'PUT')
-          .setBody({ id: createId, option: 'content', body: data.content })
-          .run()
+        insertFileHtml($explorerBody, data.successHTML)
+        fileSet(data.id)
+        fileSelect(data.id)
+        setRename(getFileOfId(data.id))
       })
       .run()
   }
