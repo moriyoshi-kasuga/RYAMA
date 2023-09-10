@@ -29,7 +29,7 @@
                     <a href="{% url 'home' %}#features">使い方</a>
                 </li>
                 <li>
-                    <a href="{% url 'markdowns' %}">飾る</a>
+                    <a href="{% url 'markdowns' %}" id="toMarkdown">書く</a>
                 </li>
             </ul>
             {% if request.user.is_authenticated %}

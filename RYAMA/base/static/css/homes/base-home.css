@@ -47,3 +47,10 @@ body {
   border-radius: 20px;
 }
 
+#toMarkdown {
+  color: tomato;
+}
+
+#toMarkdown:hover {
+  color: red;
+}
