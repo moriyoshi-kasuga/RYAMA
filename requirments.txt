@@ -1,0 +1,7 @@
+asgiref==3.7.2
+Django==4.2.5
+django-browser-reload==1.11.0
+django-js-asset==2.1.0
+django-mptt==0.15.0
+mistletoe==1.2.1
+sqlparse==0.4.4
