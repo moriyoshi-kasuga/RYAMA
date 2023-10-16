@@ -5,3 +5,4 @@ django-js-asset==2.1.0
 django-mptt==0.15.0
 mistletoe==1.2.1
 sqlparse==0.4.4
+
